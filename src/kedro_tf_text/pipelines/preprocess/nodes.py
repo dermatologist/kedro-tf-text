@@ -8,6 +8,10 @@ from nltk.corpus import stopwords
 from keras.preprocessing.sequence import pad_sequences
 from keras.preprocessing.text import Tokenizer
 import pandas as pd
+import numpy as np
+from typing import Any, Callable, Dict, List, Tuple
+from keras.layers import Embedding
+
 
 def clean_medical(text_list):
     text_list = [single_string.lower().strip() for single_string in text_list] # lower case & whitespace removal
@@ -50,3 +54,40 @@ def json_processed_text(csv_data:pd.DataFrame):
     csv_data['Text'] = clean_data
     seq_data, vocab = list_to_seq(text_list=clean_data, num_words=15000, seq_len=140) # on average 40 words per document, keeping it a bit more then that
     return vocab
+
+
+def create_glove_embeddings(load_from_text_dataset: str, load_vocab_from_json: List, parameters: Dict) -> Dict:
+
+    # EMBEDDING
+    """
+        # in pipeline definition
+        node(
+            func=create_glove_embeddings,
+            inputs=["text_dataset", "json_dataset", "params:embeddings"],
+            outputs="pickle_dataset",
+            name="unique node name"
+        )
+    """
+    MAX_NUM_WORDS = parameters['MAX_NUM_WORDS']  # 15000
+    EMBEDDING_DIM = parameters['EMBEDDING_DIM'] #300
+    MAX_SEQ_LENGTH = parameters['MAX_SEQ_LENGTH'] #140
+
+    embeddings_index = {}
+    for line in load_from_text_dataset:
+        values = line.split()
+        word = values[0]
+        coefs = np.asarray(values[1:], dtype='float32')
+        embeddings_index[word] = coefs
+    embedding_matrix = np.zeros((MAX_NUM_WORDS, EMBEDDING_DIM))
+    for word, i in load_vocab_from_json.items():
+        if i >= MAX_NUM_WORDS:
+            continue
+        embedding_vector = embeddings_index.get(word)
+        if embedding_vector is not None:
+            embedding_matrix[i] = embedding_vector
+
+    return Embedding(input_dim=MAX_NUM_WORDS, output_dim=EMBEDDING_DIM,
+                     input_length=MAX_SEQ_LENGTH,
+                     weights=[embedding_matrix],
+                     trainable=True
+                     )
