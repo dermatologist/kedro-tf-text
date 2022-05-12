@@ -29,7 +29,17 @@ def list_to_seq(text_list, num_words, seq_len):
     padded_sequences = pad_sequences(sequences, maxlen=seq_len, padding='post')
     return padded_sequences,tokenizer.word_index
 
+
 def pickle_processed_text(csv_data:pd.DataFrame):
+    """_summary_
+
+    Args:
+        csv_data (pd.DataFrame): ID - file name of the corresponding image & Text - report of the image
+
+
+    Returns:
+        _type_: _description_
+    """
     clean_data = clean_medical(list(csv_data.Text))
     csv_data['Text'] = clean_data
     seq_data, vocab = list_to_seq(text_list=clean_data, num_words=15000, seq_len=140) # on average 40 words per document, keeping it a bit more then that
