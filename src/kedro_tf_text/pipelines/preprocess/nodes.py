@@ -56,7 +56,7 @@ def json_processed_text(csv_data:pd.DataFrame):
     return vocab
 
 
-def create_glove_embeddings(load_from_text_dataset: str, load_vocab_from_json: List, parameters: Dict) -> Dict:
+def create_glove_embeddings(load_from_text_dataset: str, load_vocab_from_json: Dict, parameters: Dict) -> Dict:
 
     # EMBEDDING
     """
