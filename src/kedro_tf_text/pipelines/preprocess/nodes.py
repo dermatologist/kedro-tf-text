@@ -34,7 +34,7 @@ def list_to_seq(text_list, num_words, seq_len):
     return padded_sequences,tokenizer.word_index
 
 
-def pickle_processed_text(csv_data:pd.DataFrame):
+def pickle_processed_text(csv_data:pd.DataFrame, parameters: Dict):
     """_summary_
 
     Args:
@@ -44,15 +44,22 @@ def pickle_processed_text(csv_data:pd.DataFrame):
     Returns:
         _type_: _description_
     """
-    clean_data = clean_medical(list(csv_data.Text))
-    csv_data['Text'] = clean_data
-    seq_data, vocab = list_to_seq(text_list=clean_data, num_words=15000, seq_len=140) # on average 40 words per document, keeping it a bit more then that
-    return dict(zip(list(csv_data['ID']),seq_data))
+    MAX_NUM_WORDS = parameters['MAX_NUM_WORDS']  # 15000
+    EMBEDDING_DIM = parameters['EMBEDDING_DIM']  # 300
+    MAX_SEQ_LENGTH = parameters['MAX_SEQ_LENGTH']  # 140
 
-def json_processed_text(csv_data:pd.DataFrame):
     clean_data = clean_medical(list(csv_data.Text))
-    csv_data['Text'] = clean_data
-    seq_data, vocab = list_to_seq(text_list=clean_data, num_words=15000, seq_len=140) # on average 40 words per document, keeping it a bit more then that
+    csv_data[parameters['REPORT_FIELD']] = clean_data
+    seq_data, vocab = list_to_seq(text_list=clean_data, num_words=MAX_NUM_WORDS, seq_len=MAX_SEQ_LENGTH) # on average 40 words per document, keeping it a bit more then that
+    return dict(zip(list(csv_data[parameters['ID_FIELD']]), seq_data))
+
+def json_processed_text(csv_data:pd.DataFrame, parameters: Dict):
+    MAX_NUM_WORDS = parameters['MAX_NUM_WORDS']  # 15000
+    EMBEDDING_DIM = parameters['EMBEDDING_DIM'] #300
+    MAX_SEQ_LENGTH = parameters['MAX_SEQ_LENGTH'] #140
+    clean_data = clean_medical(list(csv_data.Text))
+    csv_data[parameters['REPORT_FIELD']] = clean_data
+    seq_data, vocab = list_to_seq(text_list=clean_data, num_words=MAX_NUM_WORDS, seq_len=MAX_SEQ_LENGTH) # on average 40 words per document, keeping it a bit more then that
     return vocab
 
 
