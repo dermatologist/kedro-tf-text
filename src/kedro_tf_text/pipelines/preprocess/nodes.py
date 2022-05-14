@@ -80,7 +80,7 @@ def create_glove_embeddings(load_from_text_dataset: str, load_vocab_from_json: D
     MAX_SEQ_LENGTH = parameters['MAX_SEQ_LENGTH'] #140
 
     embeddings_index = {}
-    for line in load_from_text_dataset:
+    for line in load_from_text_dataset[1:].splitlines():
         values = line.split()
         word = values[0]
         coefs = np.asarray(values[1:], dtype='float32')
