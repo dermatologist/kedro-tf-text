@@ -20,7 +20,8 @@ from kedro.framework.hooks import _create_hook_manager
 from kedro.extras.datasets.text import TextDataSet
 from kedro.extras.datasets.json import JSONDataSet
 from kedro.extras.datasets.pickle import PickleDataSet
-from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings
+from kedro.extras.datasets.pandas import CSVDataSet
+from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, tabular_model
 
 
 @pytest.fixture
@@ -56,5 +57,16 @@ class TestProjectContext:
         jsonloaded = json_data.load()
         conf_params = project_context.config_loader.get('**/preprocess.yml')
         data = create_glove_embeddings(reloaded, jsonloaded, conf_params['embeddings'])
+        pickle_data.save(data)
+        assert data is not None
+
+    def test_tabular_model(self, project_context):
+        csvpath = "data/01_raw/test_dataset.csv"
+        picklepath = "data/06_models/tabular_model.pkl"
+        data_set = CSVDataSet(filepath=csvpath)
+        pickle_data = PickleDataSet(filepath=picklepath)
+        reloaded = data_set.load()
+        conf_params = project_context.config_loader.get('**/preprocess.yml')
+        data = tabular_model(reloaded, conf_params['embeddings'])
         pickle_data.save(data)
         assert data is not None

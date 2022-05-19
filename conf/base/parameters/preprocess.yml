@@ -10,3 +10,4 @@ embeddings:
   MAX_SEQ_LENGTH: 140
   REPORT_FIELD: Text
   ID_FIELD: ID
+  TARGET: gender # The header of the dependant variable
