@@ -17,6 +17,11 @@ from kedro.config import ConfigLoader
 from kedro.framework.context import KedroContext
 from kedro.framework.hooks import _create_hook_manager
 
+from kedro.extras.datasets.text import TextDataSet
+from kedro.extras.datasets.json import JSONDataSet
+from kedro.extras.datasets.pickle import PickleDataSet
+from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings
+
 
 @pytest.fixture
 def config_loader():
@@ -39,3 +44,17 @@ def project_context(config_loader):
 class TestProjectContext:
     def test_project_path(self, project_context):
         assert project_context.project_path == Path.cwd()
+
+    def test_glove_embeddings(self, project_context):
+        filepath = "data/04_feature/new_data_embed300.txt"
+        jsonpath = "data/04_feature/vocab.json"
+        picklepath = "data/06_models/glove_embeddings.pickle"
+        data_set = TextDataSet(filepath=filepath)
+        json_data = JSONDataSet(filepath=jsonpath)
+        pickle_data = PickleDataSet(filepath=picklepath)
+        reloaded = data_set.load()
+        jsonloaded = json_data.load()
+        conf_params = project_context.config_loader.get('**/preprocess.yml')
+        data = create_glove_embeddings(reloaded, jsonloaded, conf_params['embeddings'])
+        pickle_data.save(data)
+        assert data is not None
