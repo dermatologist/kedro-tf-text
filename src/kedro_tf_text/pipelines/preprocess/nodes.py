@@ -11,7 +11,8 @@ import pandas as pd
 import numpy as np
 from typing import Any, Callable, Dict, List, Tuple
 from keras.layers import Embedding
-
+from deeptables.models.deeptable import DeepTable, ModelConfig
+from deeptables.models.deepnets import DeepFM
 
 def clean_medical(text_list):
     text_list = [single_string.lower().strip() for single_string in text_list] # lower case & whitespace removal
@@ -98,3 +99,21 @@ def create_glove_embeddings(load_from_text_dataset: str, load_vocab_from_json: D
                      weights=[embedding_matrix],
                      trainable=True
                      )
+
+def tabular_model(csv_data:pd.DataFrame, parameters: Dict):
+    y = csv_data.pop(parameters['TARGET'])
+    X = csv_data
+    conf = ModelConfig(
+        nets=DeepFM,  # same as `nets=['linear','dnn_nets','fm_nets']`
+        categorical_columns='auto',  # or categorical_columns=['x1', 'x2', 'x3', ...]
+        # can be `metrics=['RootMeanSquaredError']` for regression task
+        # metrics=['AUC', 'accuracy'],
+        auto_categorize=True,
+        auto_discrete=False,
+        embeddings_output_dim=20,
+        embedding_dropout=0,
+    )
+    dt = DeepTable(config=conf)
+    deepmodel, history = dt.fit(X, y)
+    # https://github.com/DataCanvasIO/DeepTables/blob/master/deeptables/models/deeptable.py
+    return deepmodel.model

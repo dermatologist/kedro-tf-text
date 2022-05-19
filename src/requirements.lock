@@ -28,12 +28,15 @@ astunparse==1.6.3
     # via tensorflow
 attrs==21.4.0
     # via
+    #   eli5
     #   jsonschema
     #   pytest
 babel==2.10.1
     # via jupyterlab-server
 backcall==0.2.0
     # via ipython
+bcrypt==3.2.2
+    # via paramiko
 beautifulsoup4==4.11.1
     # via nbconvert
 binaryornot==0.4.4
@@ -46,10 +49,16 @@ cachetools==4.2.4
     # via
     #   google-auth
     #   kedro
+category-encoders==2.4.1
+    # via deeptables
 certifi==2021.10.8
     # via requests
 cffi==1.15.0
-    # via argon2-cffi-bindings
+    # via
+    #   argon2-cffi-bindings
+    #   bcrypt
+    #   cryptography
+    #   pynacl
 chardet==4.0.0
     # via
     #   binaryornot
@@ -58,33 +67,63 @@ click==8.1.3
     # via
     #   black
     #   cookiecutter
+    #   distributed
+    #   featuretools
     #   kedro
     #   nltk
     #   pip-tools
+cloudpickle==2.0.0
+    # via
+    #   dask
+    #   distributed
+    #   featuretools
+convertdate==2.4.0
+    # via holidays
 cookiecutter==1.7.3
     # via kedro
 coverage[toml]==6.3.2
     # via pytest-cov
+cryptography==37.0.2
+    # via paramiko
+cycler==0.11.0
+    # via matplotlib
+dask[dataframe]==2022.5.0
+    # via
+    #   distributed
+    #   featuretools
 debugpy==1.6.0
     # via ipykernel
 decorator==5.1.1
     # via ipython
+deeptables==0.2.3.1
+    # via -r /Users/M267492/Repository/kedro-tf-text/src/requirements.txt
 defusedxml==0.7.1
     # via nbconvert
+distributed==2022.5.0
+    # via featuretools
 dynaconf==3.1.8
     # via kedro
+eli5==0.13.0
+    # via deeptables
 entrypoints==0.4
     # via
     #   jupyter-client
     #   nbconvert
 fastjsonschema==2.15.3
     # via nbformat
+featuretools==1.9.0
+    # via hypernets
 flake8==3.9.2
     # via -r /Users/M267492/Repository/kedro-tf-text/src/requirements.txt
 flatbuffers==2.0
     # via tensorflow
+fonttools==4.33.3
+    # via matplotlib
 fsspec==2022.1.0
-    # via kedro
+    # via
+    #   dask
+    #   hypernets
+    #   kedro
 gast==0.5.3
     # via tensorflow
 gitdb==4.0.9
@@ -99,12 +138,24 @@ google-auth-oauthlib==0.4.6
     # via tensorboard
 google-pasta==0.2.0
     # via tensorflow
+graphviz==0.20
+    # via eli5
 grpcio==1.46.1
     # via
     #   tensorboard
     #   tensorflow
-h5py==3.6.0
-    # via tensorflow
+h5py==2.10.0
+    # via
+    #   deeptables
+    #   tensorflow
+heapdict==1.0.1
+    # via zict
+hijri-converter==2.2.3
+    # via holidays
+holidays==0.13
+    # via featuretools
+hypernets==0.2.5.1
+    # via deeptables
 idna==2.10
     # via
     #   anyio
@@ -127,6 +178,7 @@ ipykernel==6.13.0
 ipython==7.33.0
     # via
     #   -r /Users/M267492/Repository/kedro-tf-text/src/requirements.txt
+    #   hypernets
     #   ipykernel
     #   ipywidgets
     #   jupyter-console
@@ -145,6 +197,8 @@ jedi==0.18.1
 jinja2==3.1.2
     # via
     #   cookiecutter
+    #   distributed
+    #   eli5
     #   jinja2-time
     #   jupyter-server
     #   jupyterlab
@@ -156,7 +210,10 @@ jinja2-time==0.2.0
 jmespath==0.10.0
     # via kedro
 joblib==1.1.0
-    # via nltk
+    # via
+    #   hypernets
+    #   nltk
+    #   scikit-learn
 json5==0.9.8
     # via jupyterlab-server
 jsonschema==4.5.1
@@ -199,10 +256,6 @@ jupyterlab-server==2.13.0
 jupyterlab-widgets==1.1.0
     # via ipywidgets
 kedro==0.18.1
-    # via
-    #   -r /Users/M267492/Repository/kedro-tf-text/src/requirements.txt
-    #   kedro-telemetry
-kedro-telemetry==0.2.0
     # via -r /Users/M267492/Repository/kedro-tf-text/src/requirements.txt
 keras==2.8.0
     # via
@@ -210,14 +263,28 @@ keras==2.8.0
     #   tensorflow
 keras-preprocessing==1.1.2
     # via tensorflow
+kiwisolver==1.4.2
+    # via matplotlib
+korean-lunar-calendar==0.2.1
+    # via holidays
 libclang==14.0.1
     # via tensorflow
+lightgbm==3.3.2
+    # via
+    #   deeptables
+    #   hypernets
+locket==1.0.0
+    # via
+    #   distributed
+    #   partd
 markdown==3.3.7
     # via tensorboard
 markupsafe==2.1.1
     # via
     #   jinja2
     #   nbconvert
+matplotlib==3.5.2
+    # via seaborn
 matplotlib-inline==0.1.3
     # via
     #   ipykernel
@@ -226,6 +293,8 @@ mccabe==0.6.1
     # via flake8
 mistune==0.8.4
     # via nbconvert
+msgpack==1.0.3
+    # via distributed
 mypy-extensions==0.4.3
     # via black
 nbclassic==0.3.7
@@ -264,10 +333,24 @@ notebook-shim==0.1.0
     # via nbclassic
 numpy==1.22.3
     # via
+    #   category-encoders
+    #   dask
+    #   deeptables
+    #   eli5
+    #   featuretools
     #   h5py
+    #   hypernets
     #   keras-preprocessing
+    #   lightgbm
+    #   matplotlib
     #   opt-einsum
     #   pandas
+    #   patsy
+    #   pyarrow
+    #   scikit-learn
+    #   scipy
+    #   seaborn
+    #   statsmodels
     #   tensorboard
     #   tensorflow
 oauthlib==3.2.0
@@ -276,27 +359,51 @@ opt-einsum==3.3.0
     # via tensorflow
 packaging==21.3
     # via
+    #   dask
+    #   deeptables
+    #   distributed
     #   ipykernel
     #   jupyter-server
     #   jupyterlab
     #   jupyterlab-server
+    #   matplotlib
     #   nbconvert
     #   pytest
     #   qtpy
-pandas==1.4.2
-    # via -r /Users/M267492/Repository/kedro-tf-text/src/requirements.txt
+    #   statsmodels
+pandas==1.4.1
+    # via
+    #   -r /Users/M267492/Repository/kedro-tf-text/src/requirements.txt
+    #   category-encoders
+    #   dask
+    #   deeptables
+    #   featuretools
+    #   hypernets
+    #   seaborn
+    #   statsmodels
+    #   woodwork
 pandocfilters==1.5.0
     # via nbconvert
+paramiko==2.11.0
+    # via hypernets
 parso==0.8.3
     # via jedi
+partd==1.2.0
+    # via dask
 pathspec==0.9.0
     # via black
+patsy==0.5.2
+    # via
+    #   category-encoders
+    #   statsmodels
 pep517==0.12.0
     # via pip-tools
 pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
+pillow==9.1.1
+    # via matplotlib
 pip-tools==6.6.0
     # via kedro
 platformdirs==2.5.2
@@ -307,6 +414,8 @@ pluggy==1.0.0
     #   pytest
 poyo==0.5.0
     # via cookiecutter
+prettytable==3.3.0
+    # via hypernets
 prometheus-client==0.14.1
     # via
     #   jupyter-server
@@ -320,13 +429,19 @@ protobuf==3.20.1
     #   tensorboard
     #   tensorflow
 psutil==5.9.0
-    # via ipykernel
+    # via
+    #   distributed
+    #   featuretools
+    #   hypernets
+    #   ipykernel
 ptyprocess==0.7.0
     # via
     #   pexpect
     #   terminado
 py==1.11.0
     # via pytest
+pyarrow==8.0.0
+    # via hypernets
 pyasn1==0.4.8
     # via
     #   pyasn1-modules
@@ -345,8 +460,14 @@ pygments==2.12.0
     #   jupyter-console
     #   nbconvert
     #   qtconsole
+pymeeus==0.5.11
+    # via convertdate
+pynacl==1.5.0
+    # via paramiko
 pyparsing==3.0.9
-    # via packaging
+    # via
+    #   matplotlib
+    #   packaging
 pyrsistent==0.18.1
     # via jsonschema
 pytest==6.2.5
@@ -361,8 +482,13 @@ pytest-mock==1.13.0
 python-dateutil==2.8.2
     # via
     #   arrow
+    #   holidays
     #   jupyter-client
+    #   matplotlib
     #   pandas
+    #   woodwork
+python-geohash==0.8.5
+    # via hypernets
 python-json-logger==2.0.2
     # via kedro
 python-slugify==6.1.2
@@ -373,8 +499,10 @@ pytz==2022.1
     #   pandas
 pyyaml==5.4.1
     # via
+    #   dask
+    #   distributed
+    #   hypernets
     #   kedro
-    #   kedro-telemetry
 pyzmq==22.3.0
     # via
     #   jupyter-client
@@ -390,8 +518,8 @@ regex==2022.4.24
 requests==2.25.1
     # via
     #   cookiecutter
+    #   hypernets
     #   jupyterlab-server
-    #   kedro-telemetry
     #   requests-oauthlib
     #   tensorboard
 requests-oauthlib==1.3.1
@@ -400,6 +528,27 @@ rope==0.21.1
     # via kedro
 rsa==4.8
     # via google-auth
+scikit-learn==1.1.1
+    # via
+    #   category-encoders
+    #   deeptables
+    #   eli5
+    #   hypernets
+    #   lightgbm
+    #   woodwork
+scipy==1.8.1
+    # via
+    #   category-encoders
+    #   deeptables
+    #   eli5
+    #   featuretools
+    #   hypernets
+    #   lightgbm
+    #   scikit-learn
+    #   seaborn
+    #   statsmodels
+seaborn==0.11.2
+    # via hypernets
 send2trash==1.8.0
     # via
     #   jupyter-server
@@ -410,18 +559,30 @@ six==1.16.0
     #   astunparse
     #   bleach
     #   cookiecutter
+    #   eli5
     #   google-auth
     #   google-pasta
     #   grpcio
+    #   h5py
     #   keras-preprocessing
+    #   paramiko
+    #   patsy
     #   python-dateutil
     #   tensorflow
 smmap==5.0.0
     # via gitdb
 sniffio==1.2.0
     # via anyio
+sortedcontainers==2.4.0
+    # via distributed
 soupsieve==2.3.2.post1
     # via beautifulsoup4
+statsmodels==0.13.2
+    # via category-encoders
+tabulate==0.8.9
+    # via eli5
+tblib==1.7.0
+    # via distributed
 tensorboard==2.8.0
     # via tensorflow
 tensorboard-data-server==0.6.1
@@ -442,6 +603,8 @@ text-unidecode==1.3
     # via python-slugify
 tf-estimator-nightly==2.8.0.dev2021122109
     # via tensorflow
+threadpoolctl==3.1.0
+    # via scikit-learn
 tinycss2==1.1.1
     # via nbconvert
 toml==0.10.2
@@ -453,10 +616,17 @@ tomli==2.0.1
     #   black
     #   coverage
     #   pep517
+toolz==0.11.2
+    # via
+    #   dask
+    #   distributed
+    #   partd
 toposort==1.7
     # via kedro
 tornado==6.1
     # via
+    #   distributed
+    #   hypernets
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
@@ -464,9 +634,12 @@ tornado==6.1
     #   notebook
     #   terminado
 tqdm==4.64.0
-    # via nltk
+    # via
+    #   featuretools
+    #   nltk
 traitlets==5.2.0
     # via
+    #   hypernets
     #   ipykernel
     #   ipython
     #   ipywidgets
@@ -484,9 +657,13 @@ typing-extensions==4.2.0
     #   black
     #   tensorflow
 urllib3==1.26.9
-    # via requests
+    # via
+    #   distributed
+    #   requests
 wcwidth==0.2.5
-    # via prompt-toolkit
+    # via
+    #   prettytable
+    #   prompt-toolkit
 webencodings==0.5.1
     # via
     #   bleach
@@ -498,12 +675,19 @@ werkzeug==2.1.2
 wheel==0.37.1
     # via
     #   astunparse
+    #   lightgbm
     #   pip-tools
     #   tensorboard
 widgetsnbextension==3.6.0
     # via ipywidgets
+woodwork==0.16.3
+    # via featuretools
 wrapt==1.14.1
     # via tensorflow
+xlsxwriter==3.0.3
+    # via hypernets
+zict==2.2.0
+    # via distributed
 zipp==3.8.0
     # via
     #   importlib-metadata
