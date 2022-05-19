@@ -12,5 +12,6 @@ pytest-mock>=1.7.1, <2.0
 pytest~=6.2
 keras
 tensorflow
+deeptables
 pandas
 nltk
