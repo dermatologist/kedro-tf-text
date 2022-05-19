@@ -113,7 +113,7 @@ def tabular_model(csv_data:pd.DataFrame, parameters: Dict):
         embeddings_output_dim=20,
         embedding_dropout=0,
     )
-    model = DeepTable(config=conf)
-    model.fit(X, y)
-    return model
-
+    dt = DeepTable(config=conf)
+    deepmodel, history = dt.fit(X, y)
+    # https://github.com/DataCanvasIO/DeepTables/blob/master/deeptables/models/deeptable.py
+    return deepmodel.model

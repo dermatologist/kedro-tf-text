@@ -21,6 +21,7 @@ from kedro.extras.datasets.text import TextDataSet
 from kedro.extras.datasets.json import JSONDataSet
 from kedro.extras.datasets.pickle import PickleDataSet
 from kedro.extras.datasets.pandas import CSVDataSet
+from kedro.extras.datasets.tensorflow import TensorFlowModelDataset
 from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, tabular_model
 
 
@@ -62,11 +63,14 @@ class TestProjectContext:
 
     def test_tabular_model(self, project_context):
         csvpath = "data/01_raw/test_dataset.csv"
-        picklepath = "data/06_models/tabular_model.pkl"
+        tfpath = "data/06_models/tabular_model.tf"
         data_set = CSVDataSet(filepath=csvpath)
-        pickle_data = PickleDataSet(filepath=picklepath)
+        save_args ={
+            'save_format': 'tf'
+        }
+        tf_model = TensorFlowModelDataset(filepath=tfpath, save_args=save_args)
         reloaded = data_set.load()
         conf_params = project_context.config_loader.get('**/preprocess.yml')
         data = tabular_model(reloaded, conf_params['embeddings'])
-        pickle_data.save(data)
+        tf_model.save(data)
         assert data is not None
