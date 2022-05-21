@@ -117,3 +117,20 @@ def tabular_model(csv_data:pd.DataFrame, parameters: Dict):
     deepmodel, history = dt.fit(X, y)
     # https://github.com/DataCanvasIO/DeepTables/blob/master/deeptables/models/deeptable.py
     return deepmodel.model
+
+########## https://machinelearningmastery.com/develop-n-gram-multichannel-convolutional-neural-network-sentiment-analysis/
+# calculate the maximum document length
+def max_length(lines):
+	return max([len(s.split()) for s in lines])
+
+# fit a tokenizer
+def create_tokenizer(lines):
+	tokenizer = Tokenizer()
+	tokenizer.fit_on_texts(lines)
+	return tokenizer
+
+
+def get_vocab_size(tokenizer):
+    # calculate vocabulary size
+    return len(tokenizer.word_index) + 1
+##########
