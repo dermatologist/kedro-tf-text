@@ -63,7 +63,7 @@ class TestProjectContext:
 
     def test_tabular_model(self, project_context):
         csvpath = "data/01_raw/test_dataset.csv"
-        tfpath = "data/06_models/tabular_model.tf"
+        tfpath = "data/06_models/tabular_model"
         data_set = CSVDataSet(filepath=csvpath)
         save_args ={
             'save_format': 'tf'
