@@ -102,6 +102,7 @@ def create_glove_embeddings(load_from_text_dataset: str, load_vocab_from_json: D
 
 def tabular_model(csv_data:pd.DataFrame, parameters: Dict):
     y = csv_data.pop(parameters['TARGET'])
+    csv_data.drop(parameters['DROP'], axis=1, inplace=True)
     X = csv_data
     conf = ModelConfig(
         nets=DeepFM,  # same as `nets=['linear','dnn_nets','fm_nets']`
