@@ -5,9 +5,8 @@ description = "Text processing pipelines"
 authors = [
     "Bell Eapen <github@gulfdoctor.net>"
 ]
-license = "gpl v3"
 readme = "README.md"
-python = "^3.8"
+python = "^3.7"
 homepage = "https://nuchange.ca"
 repository = "https://github.com/dermatologist/kedro-tf-text"
 documentation = "https://github.com/dermatologist/kedro-tf-text"
