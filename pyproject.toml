@@ -1,18 +1,6 @@
 [project]
 name = "kedro_tf_text"
 version = "0.1"
-description = "Text processing pipelines"
-readme = "README.md"
-python = "^3.7"
-homepage = "https://nuchange.ca"
-repository = "https://github.com/dermatologist/kedro-tf-text"
-documentation = "https://github.com/dermatologist/kedro-tf-text"
-
-keywords = ["ML", "AI", "NLP"]
-
-classifiers = [
-    "Topic :: Scientific/Engineering :: Artificial Intelligence",
-]
 
 [tool.kedro]
 package_name = "kedro_tf_text"
