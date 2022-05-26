@@ -2,9 +2,6 @@
 name = "kedro_tf_text"
 version = "0.1"
 description = "Text processing pipelines"
-authors = [
-    "Bell Eapen <github@gulfdoctor.net>"
-]
 readme = "README.md"
 python = "^3.7"
 homepage = "https://nuchange.ca"
