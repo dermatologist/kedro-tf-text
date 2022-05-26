@@ -13,6 +13,9 @@ from typing import Any, Callable, Dict, List, Tuple
 from keras.layers import Embedding
 from deeptables.models.deeptable import DeepTable, ModelConfig
 from deeptables.models.deepnets import DeepFM
+import tensorflow as tf
+from tensorflow.keras import layers
+
 
 def clean_medical(text_list):
     text_list = [single_string.lower().strip() for single_string in text_list] # lower case & whitespace removal
@@ -100,7 +103,7 @@ def create_glove_embeddings(load_from_text_dataset: str, load_vocab_from_json: D
                      trainable=True
                      )
 
-def tabular_model(csv_data:pd.DataFrame, parameters: Dict):
+def _tabular_model(csv_data:pd.DataFrame, parameters: Dict):
     y = csv_data.pop(parameters['TARGET'])
     csv_data.drop(parameters['DROP'], axis=1, inplace=True)
     X = csv_data
@@ -135,3 +138,75 @@ def get_vocab_size(tokenizer):
     # calculate vocabulary size
     return len(tokenizer.word_index) + 1
 ##########
+
+
+def tabular_model(csv_data: pd.DataFrame, parameters: Dict):
+
+    csv_features = csv_data.copy()
+
+
+    # csv_labels = csv_features.pop(parameters['TARGET'])
+
+    inputs = {}
+
+    for name, column in csv_features.items():
+        dtype = column.dtype
+        if dtype == object:
+            dtype = tf.string
+        else:
+            dtype = tf.float32
+
+        inputs[name] = tf.keras.Input(shape=(1,), name=name, dtype=dtype)
+
+
+    numeric_inputs = {name: input for name, input in inputs.items()
+                    if input.dtype == tf.float32}
+
+    x = layers.Concatenate()(list(numeric_inputs.values()))
+    norm = layers.Normalization()
+    norm.adapt(np.array(csv_data[numeric_inputs.keys()]))
+    all_numeric_inputs = norm(x)
+
+    preprocessed_inputs = [all_numeric_inputs]
+
+    for name, input in inputs.items():
+        if input.dtype == tf.float32:
+            continue
+
+        lookup = layers.StringLookup(vocabulary=np.unique(csv_features[name]))
+        one_hot = layers.CategoryEncoding(num_tokens=lookup.vocabulary_size())
+
+        x = lookup(input)
+        x = one_hot(x)
+        preprocessed_inputs.append(x)
+
+
+    preprocessed_inputs_cat = layers.Concatenate()(preprocessed_inputs)
+
+    csv_preprocessing = tf.keras.Model(inputs, preprocessed_inputs_cat)
+
+    # tf.keras.utils.plot_model(model=csv_preprocessing,
+    #                         rankdir="LR", dpi=72, show_shapes=True)
+
+
+    # csv_features_dict = {name: np.array(value)
+    #                         for name, value in csv_features.items()}
+
+
+    # features_dict = {name: values[:1] for name, values in csv_features_dict.items()}
+    #csv_preprocessing(features_dict)
+    return csv_model(csv_preprocessing, inputs)
+
+def csv_model(preprocessing_head, inputs):
+  body = tf.keras.Sequential([
+      layers.Dense(64),
+      layers.Dense(1)
+  ])
+
+  preprocessed_inputs = preprocessing_head(inputs)
+  result = body(preprocessed_inputs)
+  model = tf.keras.Model(inputs, result)
+
+  model.compile(loss=tf.losses.BinaryCrossentropy(from_logits=True),
+                optimizer=tf.optimizers.Adam())
+  return model
