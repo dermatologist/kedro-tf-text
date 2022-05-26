@@ -142,10 +142,10 @@ def get_vocab_size(tokenizer):
 
 def tabular_model(csv_data: pd.DataFrame, parameters: Dict):
 
+
+    csv_data.drop(parameters['DROP'], axis=1, inplace=True)
     csv_features = csv_data.copy()
-
-
-    # csv_labels = csv_features.pop(parameters['TARGET'])
+    csv_labels = csv_features.pop(parameters['TARGET'])
 
     inputs = {}
 
