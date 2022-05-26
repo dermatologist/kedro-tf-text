@@ -11,3 +11,4 @@ embeddings:
   REPORT_FIELD: Text
   ID_FIELD: ID
   TARGET: gender # The header of the dependant variable
+  DROP: ["id"]
