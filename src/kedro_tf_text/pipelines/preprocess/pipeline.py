@@ -2,6 +2,7 @@
 This is a boilerplate pipeline 'preprocess'
 generated using Kedro 0.18.1
 """
+# No pipelines registered
 
 from kedro.pipeline import Pipeline, node, pipeline
 
