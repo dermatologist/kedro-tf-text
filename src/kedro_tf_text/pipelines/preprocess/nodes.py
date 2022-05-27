@@ -141,7 +141,16 @@ def get_vocab_size(tokenizer):
 
 
 def tabular_model(csv_data: pd.DataFrame, parameters: Dict):
+    """Builds a DNN based on tabular data and returns the model.
+    Ref: https://www.tensorflow.org/tutorials/load_data/csv
 
+    Args:
+        csv_data (pd.DataFrame): _description_
+        parameters (Dict): _description_
+
+    Returns:
+        _type_: _description_
+    """
 
     csv_features = csv_data.copy()
 
@@ -190,6 +199,17 @@ def tabular_model(csv_data: pd.DataFrame, parameters: Dict):
     return csv_model(csv_preprocessing, csv_data, inputs, parameters)
 
 def csv_model(preprocessing_head, csv_data, inputs, parameters: Dict):
+    """_summary_
+
+    Args:
+        preprocessing_head (_type_): _description_
+        csv_data (_type_): _description_
+        inputs (_type_): _description_
+        parameters (Dict): _description_
+
+    Returns:
+        _type_: _description_
+    """
 
     csv_features = csv_data.copy()
     body = tf.keras.Sequential([
