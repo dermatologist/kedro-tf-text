@@ -142,8 +142,11 @@ def get_vocab_size(tokenizer):
 
 def tabular_model(csv_data: pd.DataFrame, parameters: Dict):
 
-    csv_data.drop(parameters['DROP'], axis=1, inplace=True)
+
     csv_features = csv_data.copy()
+
+    csv_features.drop(parameters['DROP'], axis=1, inplace=True)
+    csv_features.pop(parameters['TARGET'])
 
     inputs = {}
 
@@ -162,7 +165,7 @@ def tabular_model(csv_data: pd.DataFrame, parameters: Dict):
 
     x = layers.Concatenate()(list(numeric_inputs.values()))
     norm = layers.Normalization()
-    norm.adapt(np.array(csv_data[numeric_inputs.keys()]))
+    norm.adapt(np.array(csv_features[numeric_inputs.keys()]))
     all_numeric_inputs = norm(x)
 
     preprocessed_inputs = [all_numeric_inputs]
@@ -184,25 +187,30 @@ def tabular_model(csv_data: pd.DataFrame, parameters: Dict):
 
     csv_preprocessing = tf.keras.Model(inputs, preprocessed_inputs_cat)
 
-    return csv_model(csv_preprocessing, csv_features, inputs, parameters)
+    return csv_model(csv_preprocessing, csv_data, inputs, parameters)
 
-def csv_model(preprocessing_head, csv_features, inputs, parameters: Dict):
-  body = tf.keras.Sequential([
-      layers.Dense(64),
-      layers.Dense(1)
-  ])
+def csv_model(preprocessing_head, csv_data, inputs, parameters: Dict):
 
-  preprocessed_inputs = preprocessing_head(inputs)
-  result = body(preprocessed_inputs)
-  model = tf.keras.Model(inputs, result)
+    csv_features = csv_data.copy()
+    body = tf.keras.Sequential([
+        layers.Dense(64),
+        layers.Dense(1)
+    ])
 
-  model.compile(loss=tf.losses.BinaryCrossentropy(from_logits=True),
-                optimizer=tf.optimizers.Adam())
+    preprocessed_inputs = preprocessing_head(inputs)
+    result = body(preprocessed_inputs)
+    model = tf.keras.Model(inputs, result)
 
-  csv_labels = csv_features.pop(parameters['TARGET'])
+    model.compile(loss=tf.losses.BinaryCrossentropy(from_logits=True),
+                    optimizer=tf.optimizers.Adam())
 
-  csv_features_dict = {name: np.array(value)
-                            for name, value in csv_features.items()}
+    csv_labels = csv_features.pop(parameters['TARGET'])
 
-  model.fit(x=csv_features_dict, y=csv_labels, epochs=10)
-  return model
+
+    csv_features.drop(parameters['DROP'], axis=1, inplace=True)
+
+    csv_features_dict = {name: np.array(value)
+                                for name, value in csv_features.items()}
+
+    model.fit(x=csv_features_dict, y=csv_labels, epochs=10)
+    return model
