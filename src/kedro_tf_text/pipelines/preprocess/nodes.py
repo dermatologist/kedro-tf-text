@@ -103,7 +103,7 @@ def create_glove_embeddings(load_from_text_dataset: str, load_vocab_from_json: D
                      trainable=True
                      )
 
-def _tabular_model(csv_data:pd.DataFrame, parameters: Dict):
+def dt_tabular_model(csv_data:pd.DataFrame, parameters: Dict):
     y = csv_data.pop(parameters['TARGET'])
     csv_data.drop(parameters['DROP'], axis=1, inplace=True)
     X = csv_data
