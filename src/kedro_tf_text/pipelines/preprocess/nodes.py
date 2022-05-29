@@ -15,12 +15,12 @@ from deeptables.models.deeptable import DeepTable, ModelConfig
 from deeptables.models.deepnets import DeepFM
 import tensorflow as tf
 from tensorflow.keras import layers
-
+import string
 
 def clean_medical(text_list):
     text_list = [single_string.lower().strip() for single_string in text_list] # lower case & whitespace removal
     text_list = [re.sub(r'\d+', '', single_string) for single_string in text_list] # remove numerics
-    text_list = [single_string.translate(str.maketrans("","",single_string.punctuation)) for single_string in text_list] # remove punctuation
+    text_list = [single_string.translate(str.maketrans("","",string.punctuation)) for single_string in text_list] # remove punctuation
     text_list = [tokenize(single_string) for single_string in text_list]
     return text_list
 
@@ -37,33 +37,26 @@ def list_to_seq(text_list, num_words, seq_len):
     padded_sequences = pad_sequences(sequences, maxlen=seq_len, padding='post')
     return padded_sequences,tokenizer.word_index
 
+def _process_csv(csv_data:pd.DataFrame, parameters: Dict):
 
-def pickle_processed_text(csv_data:pd.DataFrame, parameters: Dict):
-    """_summary_
-
-    Args:
-        csv_data (pd.DataFrame): ID - file name of the corresponding image & Text - report of the image
-
-
-    Returns:
-        _type_: _description_
-    """
     MAX_NUM_WORDS = parameters['MAX_NUM_WORDS']  # 15000
     EMBEDDING_DIM = parameters['EMBEDDING_DIM']  # 300
     MAX_SEQ_LENGTH = parameters['MAX_SEQ_LENGTH']  # 140
 
-    clean_data = clean_medical(list(csv_data.Text))
+    clean_data = clean_medical(csv_data[parameters['REPORT_FIELD']].tolist())
     csv_data[parameters['REPORT_FIELD']] = clean_data
-    seq_data, vocab = list_to_seq(text_list=clean_data, num_words=MAX_NUM_WORDS, seq_len=MAX_SEQ_LENGTH) # on average 40 words per document, keeping it a bit more then that
+    # on average 40 words per document, keeping it a bit more then that
+    seq_data, vocab = list_to_seq(
+        text_list=clean_data, num_words=MAX_NUM_WORDS, seq_len=MAX_SEQ_LENGTH)
+    return (seq_data, vocab)
+
+
+def pickle_processed_text(csv_data:pd.DataFrame, parameters: Dict):
+    (seq_data, vocab) = _process_csv(csv_data, parameters)
     return dict(zip(list(csv_data[parameters['ID_FIELD']]), seq_data))
 
 def json_processed_text(csv_data:pd.DataFrame, parameters: Dict):
-    MAX_NUM_WORDS = parameters['MAX_NUM_WORDS']  # 15000
-    EMBEDDING_DIM = parameters['EMBEDDING_DIM'] #300
-    MAX_SEQ_LENGTH = parameters['MAX_SEQ_LENGTH'] #140
-    clean_data = clean_medical(list(csv_data.Text))
-    csv_data[parameters['REPORT_FIELD']] = clean_data
-    seq_data, vocab = list_to_seq(text_list=clean_data, num_words=MAX_NUM_WORDS, seq_len=MAX_SEQ_LENGTH) # on average 40 words per document, keeping it a bit more then that
+    (seq_data, vocab) = _process_csv(csv_data, parameters)
     return vocab
 
 

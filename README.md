@@ -1,5 +1,18 @@
 # Kedro Tf Text
 
+This package consists of [Kedro pipelines](https://kedro.readthedocs.io/en/stable/kedro.pipeline.html) for preprocessing text and tabular data. Work in progress.
+
+## How to install
+```
+
+pip install git+https://github.com/dermatologist/kedro-tf-text.git
+
+```
+
+## Author
+
+- [Bell Eapen](https://nuchange.ca) [![Twitter Follow](https://img.shields.io/twitter/follow/beapen?style=social)](https://twitter.com/beapen)
+
 ## Overview
 
 This is your new Kedro project, which was generated using `Kedro 0.18.1`.
