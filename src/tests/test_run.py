@@ -71,7 +71,7 @@ class TestProjectContext:
         tf_model = TensorFlowModelDataset(filepath=tfpath, save_args=save_args)
         reloaded = data_set.load()
         conf_params = project_context.config_loader.get('**/preprocess.yml')
-        data = tabular_model(reloaded, conf_params['embeddings'])
+        data = tabular_model(reloaded, conf_params)
         tf_model.save(data)
         assert data is not None
 
@@ -84,8 +84,8 @@ class TestProjectContext:
         pickle_data = PickleDataSet(filepath=picklepath)
         reloaded = data_set.load()
         conf_params = project_context.config_loader.get('**/preprocess.yml')
-        data = pickle_processed_text(reloaded, conf_params['embeddings'])
-        json_data = json_processed_text(reloaded, conf_params['embeddings'])
+        data = pickle_processed_text(reloaded, conf_params)
+        json_data = json_processed_text(reloaded, conf_params)
         pickle_data.save(data)
         json_data_set.save(json_data)
         assert data is not None
