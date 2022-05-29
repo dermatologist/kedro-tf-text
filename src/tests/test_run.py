@@ -22,7 +22,7 @@ from kedro.extras.datasets.json import JSONDataSet
 from kedro.extras.datasets.pickle import PickleDataSet
 from kedro.extras.datasets.pandas import CSVDataSet
 from kedro.extras.datasets.tensorflow import TensorFlowModelDataset
-from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, tabular_model
+from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, json_processed_text, pickle_processed_text, tabular_model
 
 
 @pytest.fixture
@@ -73,4 +73,19 @@ class TestProjectContext:
         conf_params = project_context.config_loader.get('**/preprocess.yml')
         data = tabular_model(reloaded, conf_params['embeddings'])
         tf_model.save(data)
+        assert data is not None
+
+    def test_process_text(self, project_context):
+        csvpath = "data/01_raw/test_report.csv"
+        jsonpath = "data/02_intermediate/vocab.json"
+        picklepath = "data/02_intermediate/text_model.pickle"
+        data_set = CSVDataSet(filepath=csvpath)
+        json_data_set = JSONDataSet(filepath=jsonpath)
+        pickle_data = PickleDataSet(filepath=picklepath)
+        reloaded = data_set.load()
+        conf_params = project_context.config_loader.get('**/preprocess.yml')
+        data = pickle_processed_text(reloaded, conf_params['embeddings'])
+        json_data = json_processed_text(reloaded, conf_params['embeddings'])
+        pickle_data.save(data)
+        json_data_set.save(json_data)
         assert data is not None

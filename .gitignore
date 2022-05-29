@@ -159,4 +159,4 @@ venv.bak/
 .mypy_cache/
 
 
-!data/01_raw/test_dataset.csv
+!data/01_raw/test_*.csv
