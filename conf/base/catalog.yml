@@ -2,3 +2,42 @@
 #
 # Documentation for this file format can be found in "The Data Catalog"
 # Link: https://kedro.readthedocs.io/en/stable/data/data_catalog.html
+
+text_data:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/test_report.csv
+
+pretrained_embedding:
+  type: text.TextDataSet
+  filepath: data/04_feature/new_data_embed300.txt
+
+vocab_json:
+  type: json.JSONDataSet
+  filepath: data/04_feature/vocab.json
+
+glove_embedding:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/glove-embedding.pkl
+
+processed_text:
+  type: pickle.PickleDataSet
+  filepath: data/03_primary/processed-text.pkl
+
+image_data:
+  type: PartitionedDataSet
+  dataset: pillow.ImageDataSet
+  path: data/01_raw/imageset
+  filename_suffix: ".jpg"
+
+chexnet_model:
+  type: tensorflow.TensorFlowModelDataset
+  filepath: data/06_models/densenet-chexnet
+
+
+fusion_model:
+  type: tensorflow.TensorFlowModelDataset
+  filepath: data/07_model_output/fusion
+
+datasetinmemory:
+  type: MemoryDataSet
+  copy_mode: assign
