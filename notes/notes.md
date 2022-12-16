@@ -12,6 +12,7 @@
 * [from site]The kedro.pipeline.modular_pipeline.pipeline wrapper method unlocks the real power of modular pipelines. I don't take this approach. **I pass a dict to the constructor**
 * Us this approach when using third party modular pipelines.
 ### [Micropackage](https://kedro.readthedocs.io/en/stable/nodes_and_pipelines/micro_packaging.html)
-* kedro micropkg package <micropkg_name>
-* kedro micropkg pull
+* kedro micropkg package <micropkg_name> Example: kedro micropkg package pipelines.preprocess
+* kedro micropkg package --alias <new_package_name> <micropkg_name>  Example: kedro micropkg package --alias kedro_tf_text pipelines.preprocess
+* kedro micropkg pull           Example:kedro micropkg pull dist/preprocess-0.1.tar.gz
 
