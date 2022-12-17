@@ -1,6 +1,8 @@
-"""
-This is a boilerplate pipeline 'preprocess'
-generated using Kedro 0.18.1
+""" Kedro pipeline nodes for preprocessing text data
+
+@author: Bell Eapen
+@date: 2021-05-01
+
 """
 
 import re
