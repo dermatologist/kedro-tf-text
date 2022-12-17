@@ -10,6 +10,7 @@
 * https://vaclavkosar.com/ml/Multimodal-Image-Text-Classification
 
 ## References
+* https://github.com/artelab/Image-and-Text-fusion-for-UPMC-Food-101-using-BERT-and-CNNs  **Add next**
 * https://github.com/AxelAllen/Multimodal-BERT-in-Medical-Image-and-Text-Classification
 ## [Kedro packaging](https://kedro.readthedocs.io/en/stable/tutorial/package_a_project.html)
 * kedro package
