@@ -8,6 +8,16 @@ This package consists of [Kedro pipelines](https://kedro.readthedocs.io/en/stabl
 pip install git+https://github.com/dermatologist/kedro-tf-text.git
 
 ```
+## Nodes
+| Name | Input | Output | Parameters | Description |
+| ---- | ---- | ---- | ---- | ---- |
+| pickle_processed_text | pd.Df | sequence of tokens | ID and TEXT fields, maximum # of words, Mac seq length & embedding dim | converts text to sequence of tokens |
+| json_processed_text | " | vocab as json | maximum # of words, Mac seq length & embedding dim | Generates vocab from text |
+| create_glove_embeddings | pretrained embedding as text, vocab as json | Glove Embedding | maximum # of words, Mac seq length & embedding dim | Generate glove embedding |
+|
+
+
+## Pipelines
 
 ## Author
 

@@ -52,12 +52,35 @@ def _process_csv(csv_data:pd.DataFrame, parameters: Dict):
         text_list=clean_data, num_words=MAX_NUM_WORDS, seq_len=MAX_SEQ_LENGTH)
     return (seq_data, vocab)
 
+    """_summary_
 
+    From a csv file with an ID field and report field, extracts the sequence of tokens and the vocabulary
+    seq_data can be pickled and used as input to the model
+
+    """
 def pickle_processed_text(csv_data:pd.DataFrame, parameters: Dict):
+    """_summary_
+
+    Args:
+        csv_data (pd.DataFrame): data with ID and report fields
+        parameters (Dict): Kedro parameters
+
+    Returns:
+        Dict: returns a dictionary with ID as key and sequence of tokens as value
+    """
     (seq_data, vocab) = _process_csv(csv_data, parameters)
     return dict(zip(list(csv_data[parameters['ID_FIELD']]), seq_data))
 
 def json_processed_text(csv_data:pd.DataFrame, parameters: Dict):
+    """_summary_
+
+    Args:
+        csv_data (pd.DataFrame): data with ID and report fields
+        parameters (Dict): Kedro parameters
+
+    Returns:
+        Dict: vocabulary
+    """
     (seq_data, vocab) = _process_csv(csv_data, parameters)
     return vocab
 
