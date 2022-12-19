@@ -10,8 +10,11 @@ from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, pi
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline([])
 
-
-def create_embedding_pipeline(datasets={}, **kwargs) -> Pipeline:
+    """_summary_: This is a embedding pipeline 'preprocess'
+    call this modular pipeline in your main pipeline with the following code:
+    https://kedro.readthedocs.io/en/stable/nodes_and_pipelines/modular_pipelines.html
+    """
+def create_embedding_pipeline(**kwargs) -> Pipeline:
     return pipeline([
 
                     # node(
@@ -22,18 +25,19 @@ def create_embedding_pipeline(datasets={}, **kwargs) -> Pipeline:
                     #     name="pickle_processed_text"
                     # ),
                     node(
-                        json_processed_text,
-                        [datasets.get("text_data", "text_data"),
-                         datasets.get("parameters", "parameters")],
-                        datasets.get("vocab_json", "vocab_json"),
+                        func=json_processed_text,
+                        inputs=["text_data"],
+                        parameters=["params:embeddings"],
+                        outputs="vocab_json",
                         name="create_vocab"
                     ),
                     node(
-                        create_glove_embeddings,
-                        [datasets.get("pretrained_embedding", "pretrained_embedding"),
-                         datasets.get("vocab_json", "vocab_json"), datasets.get("parameters", "parameters")],
-                        datasets.get("glove_embedding", "glove_embedding"),
+                        func=create_glove_embeddings,
+                        inputs=["pretrained_embedding", "vocab_json"],
+                        parameters=["params:embeddings"],
+                        outputs="glove_embedding",
                         name="create_glove_embeddings"
                     ),
 
                     ])
+
