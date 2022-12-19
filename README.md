@@ -1,6 +1,8 @@
 # Kedro Tf Text
 
-This package consists of [Kedro pipelines](https://kedro.readthedocs.io/en/stable/kedro.pipeline.html) for preprocessing text and tabular data. Work in progress.
+This package consists of [Kedro pipelines](https://kedro.readthedocs.io/en/stable/kedro.pipeline.html) for preprocessing text and tabular data.
+
+## **Work in progress. DO NOT USE**
 
 ## How to install
 ```
