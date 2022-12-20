@@ -348,3 +348,32 @@ def prepare_for_bert(text_array: List, max_length:int, tokenizer: Any):
                                 tokenizer).squeeze()
 
     return ids, segments, masks
+
+
+def build_bert_model(max_length: int, bert_layer:Any, parameters: Dict) -> tf.keras.Model:
+    """Builds BERT model
+
+    Args:
+        max_length (int): _description_
+        parameters (Dict): _description_
+
+    Returns:
+        tf.keras.Model: _description_
+    """
+    input_ids = tf.keras.layers.Input(shape=(max_length,), dtype=tf.int32, name="input_ids")
+    input_masks = tf.keras.layers.Input(shape=(max_length,), dtype=tf.int32, name="input_masks")
+    input_segments = tf.keras.layers.Input(shape=(max_length,), dtype=tf.int32, name="input_segments")
+
+
+    den_out, seq_out = bert_layer([input_ids, input_masks, input_segments])
+
+    X = layers.LSTM(128)(seq_out)
+    X = layers.Dropout(0.5)(X)
+    X = layers.Dense(256, activation="relu")(X)
+    X = layers.Dropout(0.5)(X)
+    output = layers.Dense(parameters["NCLASSES"], activation='softmax')(X)
+
+    model = tf.keras.Model(inputs=[input_ids, input_masks, input_segments], outputs=[output])
+    model.compile(loss='categorical_crossentropy', optimizer=tf.keras.optimizers.Adam(
+        learning_rate=.001), metrics=['accuracy'])
+    return model
