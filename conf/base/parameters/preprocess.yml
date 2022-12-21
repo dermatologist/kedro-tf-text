@@ -12,3 +12,6 @@ embedding:
   ID_FIELD: name
   TARGET: dm # The header of the dependant variable
   DROP: ["name"]
+bert_model:
+  MAX_LENGTH: 40
+  NCLASSES: 3

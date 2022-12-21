@@ -123,24 +123,6 @@ def create_glove_embeddings(load_from_text_dataset: str, load_vocab_from_json: D
                      trainable=True
                      )
 
-# def dt_tabular_model(csv_data:pd.DataFrame, parameters: Dict):
-#     y = csv_data.pop(parameters['TARGET'])
-#     csv_data.drop(parameters['DROP'], axis=1, inplace=True)
-#     X = csv_data
-#     conf = ModelConfig(
-#         nets=DeepFM,  # same as `nets=['linear','dnn_nets','fm_nets']`
-#         categorical_columns='auto',  # or categorical_columns=['x1', 'x2', 'x3', ...]
-#         # can be `metrics=['RootMeanSquaredError']` for regression task
-#         # metrics=['AUC', 'accuracy'],
-#         auto_categorize=True,
-#         auto_discrete=False,
-#         embeddings_output_dim=20,
-#         embedding_dropout=0,
-#     )
-#     dt = DeepTable(config=conf)
-#     deepmodel, history = dt.fit(X, y)
-#     # https://github.com/DataCanvasIO/DeepTables/blob/master/deeptables/models/deeptable.py
-#     return deepmodel.model
 
 ########## https://machinelearningmastery.com/develop-n-gram-multichannel-convolutional-neural-network-sentiment-analysis/
 # calculate the maximum document length
@@ -259,6 +241,7 @@ def csv_model(preprocessing_head, csv_data, inputs, parameters: Dict):
 ## Cleaning text functions for BERT ##
 # Ref: https://github.com/artelab/Image-and-Text-fusion-for-UPMC-Food-101-using-BERT-and-CNNs/blob/main/BERT_LSTM.ipynb
 
+# https://gist.github.com/dermatologist/062c46eafe8c118334a004f6cfab663d
 def preprocess_text(sen: str) -> str:
     # Removing html tags
     sentence = remove_tags(sen)
@@ -335,7 +318,8 @@ def _get_ids(text: str, max_length: int, tokenizer: Any):
 
 vec_get_ids = np.vectorize(_get_ids, signature='(),(),()->(n)')
 
-def prepare_for_bert(text_array: List, max_length:int, tokenizer: Any):
+def prepare_for_bert(text_array: List, tokenizer: Any, parameters: Dict):
+    max_length = parameters['MAX_LENGTH']
     """Prepares text for BERT"""
     ids = vec_get_ids(text_array,
                       max_length,
@@ -350,7 +334,7 @@ def prepare_for_bert(text_array: List, max_length:int, tokenizer: Any):
     return ids, segments, masks
 
 
-def build_bert_model(max_length: int, bert_layer:Any, parameters: Dict) -> tf.keras.Model:
+def build_bert_model(bert_model:Any, parameters: Dict) -> tf.keras.Model:
     """Builds BERT model
 
     Args:
@@ -360,10 +344,12 @@ def build_bert_model(max_length: int, bert_layer:Any, parameters: Dict) -> tf.ke
     Returns:
         tf.keras.Model: _description_
     """
+    max_length = parameters['MAX_LENGTH']
     input_ids = tf.keras.layers.Input(shape=(max_length,), dtype=tf.int32, name="input_ids")
     input_masks = tf.keras.layers.Input(shape=(max_length,), dtype=tf.int32, name="input_masks")
     input_segments = tf.keras.layers.Input(shape=(max_length,), dtype=tf.int32, name="input_segments")
 
+    (bert_layer, vocab_file, tokenizer) = bert_model
 
     den_out, seq_out = bert_layer([input_ids, input_masks, input_segments])
 

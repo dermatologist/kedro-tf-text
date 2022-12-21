@@ -1,8 +1,10 @@
 from typing import Any, Dict, Optional
 from kedro.io.core import AbstractDataSet
-from bert.tokenization import FullTokenizer as BertTokenizer
 import tensorflow_hub as hub
+import bert
+from bert import tokenization
 
+# https://gist.github.com/dermatologist/062c46eafe8c118334a004f6cfab663d
 class BertModelDownload(AbstractDataSet):
     """This class downloads a BERT model and returns tokenizers and
     """
@@ -33,8 +35,9 @@ class BertModelDownload(AbstractDataSet):
                                     trainable=False)
         vocab_file = bert_layer.resolved_object.vocab_file.asset_path.numpy()
         do_lower_case = bert_layer.resolved_object.do_lower_case.numpy()
+        BertTokenizer = tokenization.FullTokenizer
         tokenizer = BertTokenizer(vocab_file, do_lower_case)
-        return (vocab_file, tokenizer)
+        return (bert_layer, vocab_file, tokenizer)
 
     def _save(self, data: Any) -> None:
         """Saves the BERT model to the specified location.
@@ -49,6 +52,4 @@ class BertModelDownload(AbstractDataSet):
             A dict that describes the attributes of the dataset.
         """
         return dict(
-            url=self._url,
-            credentials=self._credentials,
-            version=self._version)
+            url=self._url)
