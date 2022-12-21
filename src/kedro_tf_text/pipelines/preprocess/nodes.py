@@ -5,6 +5,8 @@
 
 """
 
+import sys
+from absl import flags
 import re
 from nltk.corpus import stopwords
 from keras.preprocessing.sequence import pad_sequences
@@ -242,7 +244,7 @@ def csv_model(preprocessing_head, csv_data, inputs, parameters: Dict):
 # Ref: https://github.com/artelab/Image-and-Text-fusion-for-UPMC-Food-101-using-BERT-and-CNNs/blob/main/BERT_LSTM.ipynb
 
 # https://gist.github.com/dermatologist/062c46eafe8c118334a004f6cfab663d
-def preprocess_text(sen: str) -> str:
+def _preprocess_text(sen: str) -> str:
     # Removing html tags
     sentence = remove_tags(sen)
 
@@ -260,7 +262,7 @@ def preprocess_text(sen: str) -> str:
     return sentence
 
 # https://numpy.org/doc/stable/reference/generated/numpy.vectorize.html
-vec_preprocess_text = np.vectorize(preprocess_text)
+vec_preprocess_text = np.vectorize(_preprocess_text)
 
 def remove_tags(text: str) -> str:
     return TAG_RE.sub('', text)
@@ -303,7 +305,13 @@ def _get_segments(text: str, max_length: int, tokenizer: Any):
 
 vec_get_segments = np.vectorize(_get_segments, signature='(),(),()->(n)')
 
+
 def _get_ids(text: str, max_length: int, tokenizer: Any):
+
+    # TODO: Fix this https://github.com/google-research/bert/issues/1133
+    sys.argv = ['preserve_unused_tokens=False']
+    flags.FLAGS(sys.argv)
+
     """Token ids from Tokenizer vocab"""
     tokens = tokenizer.tokenize(text)
     tokens = ["[CLS]"] + tokens + ["[SEP]"]
@@ -363,3 +371,22 @@ def build_bert_model(bert_model:Any, parameters: Dict) -> tf.keras.Model:
     model.compile(loss='categorical_crossentropy', optimizer=tf.keras.optimizers.Adam(
         learning_rate=.001), metrics=['accuracy'])
     return model
+
+
+def preprocess_text_bert(data: pd.DataFrame, bert_model: Any,  parameters: Dict) -> pd.DataFrame:
+    """Preprocesses text
+
+    Args:
+        data (pd.DataFrame): _description_
+        parameters (Dict): _description_
+
+    Returns:
+        pd.DataFrame: _description_
+    """
+
+    (bert_layer, vocab_file, tokenizer) = bert_model
+    text = parameters['REPORT_FIELD']
+    max_length = parameters['MAX_LENGTH']
+    processed_data = vec_preprocess_text(data[text].values)
+    ids, segments, masks = prepare_for_bert(processed_data, tokenizer, parameters)
+    return ids, segments, masks

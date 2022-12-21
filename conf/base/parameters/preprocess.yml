@@ -15,3 +15,4 @@ embedding:
 bert_model:
   MAX_LENGTH: 40
   NCLASSES: 3
+  REPORT_FIELD: Text

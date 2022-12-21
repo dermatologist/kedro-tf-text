@@ -5,7 +5,7 @@ generated using Kedro 0.18.1
 # No pipelines registered
 
 from kedro.pipeline import Pipeline, node, pipeline
-from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, pickle_processed_text, json_processed_text, build_bert_model
+from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, pickle_processed_text, json_processed_text, build_bert_model, preprocess_text_bert
 
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline([])
@@ -52,5 +52,17 @@ def create_bert_pipeline(**kwargs) -> Pipeline:
                         inputs=["bert_model", "params:bert_model"],
                         outputs="datasetinmemory",
                         name="build_bert_model"
+                    ),
+                    ])
+
+
+def create_preprocess_bert_pipeline(**kwargs) -> Pipeline:
+    return pipeline([
+
+                    node(
+                        preprocess_text_bert,
+                        inputs=["text_data", "bert_model", "params:bert_model"],
+                        outputs="datasetinmemory",
+                        name="preprocess_bert_model"
                     ),
                     ])

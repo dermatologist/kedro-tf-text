@@ -18,4 +18,4 @@ nltk
 tensorflow-hub
 sentencepiece
 bert-tokenizer
-bert-tensorflow
+bert-tensorflow #https://github.com/google-research/bert/issues/1133
