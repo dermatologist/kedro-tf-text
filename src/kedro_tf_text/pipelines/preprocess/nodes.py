@@ -362,8 +362,9 @@ def build_bert_model(bert_model:Any, parameters: Dict) -> tf.keras.Model:
     den_out, seq_out = bert_layer([input_ids, input_masks, input_segments])
 
     X = layers.LSTM(128)(seq_out)
-    X = layers.Dropout(0.5)(X)
-    X = layers.Dense(256, activation="relu")(X)
+    # X = layers.Dropout(0.5)(X)
+    # X = layers.Dense(256, activation="relu")(X)
+    # ! The classification layer below will be removed before fusion
     X = layers.Dropout(0.5)(X)
     output = layers.Dense(parameters["NCLASSES"], activation='softmax')(X)
 
