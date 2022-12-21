@@ -391,3 +391,16 @@ def preprocess_text_bert(data: pd.DataFrame, bert_model: Any,  parameters: Dict)
     processed_data = vec_preprocess_text(data[text].values)
     ids, segments, masks = prepare_for_bert(processed_data, tokenizer, parameters)
     return ids, segments, masks
+
+
+#### TF method
+
+def get_tf_bert_model(bert_model: Any, parameters: Dict) -> tf.keras.Model:
+    (preprocessing_layer, encoder) = bert_model
+    text_input = tf.keras.layers.Input(shape=(), dtype=tf.string, name='text')
+    encoder_inputs = preprocessing_layer(text_input)
+    outputs = encoder(encoder_inputs)
+    net = outputs['pooled_output']
+    net = tf.keras.layers.Dropout(0.1)(net)
+    net = tf.keras.layers.Dense(1, activation=None, name='classifier')(net)
+    return tf.keras.Model(text_input, net)
