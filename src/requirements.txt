@@ -12,7 +12,7 @@ pytest-mock>=1.7.1, <2.0
 pytest~=6.2
 keras
 tensorflow
-deeptables
+# deeptables
 pandas
 nltk
 bert-for-tf2
