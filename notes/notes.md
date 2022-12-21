@@ -12,6 +12,7 @@
 ## References
 * https://github.com/artelab/Image-and-Text-fusion-for-UPMC-Food-101-using-BERT-and-CNNs  **Add next**
 * https://github.com/AxelAllen/Multimodal-BERT-in-Medical-Image-and-Text-Classification
+* https://github.com/faikaydin/medical-multimodal-with-transfer-learning
 ## [Kedro packaging](https://kedro.readthedocs.io/en/stable/tutorial/package_a_project.html)
 * kedro package
 * pip install <path-to-wheel-file>
