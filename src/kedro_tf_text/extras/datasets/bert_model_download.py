@@ -30,6 +30,9 @@ class BertModelDownload(AbstractDataSet):
         """Loads the BERT model from the URL and saves it to the specified
         location.
         """
+        # TODO: https://github.com/tensorflow/hub/issues/705
+        import tensorflow_text as text
+
         tfhub_handle_encoder, tfhub_handle_preprocess = self.get_model_name(self._url)
         bert_preprocessor = hub.KerasLayer(
             tfhub_handle_preprocess, name='preprocessing')
