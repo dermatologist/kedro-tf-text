@@ -244,15 +244,16 @@ def csv_model(preprocessing_head, csv_data, inputs, parameters: Dict):
     model.compile(loss=tf.losses.BinaryCrossentropy(from_logits=True),
                     optimizer=tf.optimizers.Adam())
 
-    csv_labels = csv_features.pop(parameters['TARGET'])
+    # INFO: compile but do not fit
+    # csv_labels = csv_features.pop(parameters['TARGET'])
 
 
-    csv_features.drop(parameters['DROP'], axis=1, inplace=True)
+    # csv_features.drop(parameters['DROP'], axis=1, inplace=True)
 
-    csv_features_dict = {name: np.array(value)
-                                for name, value in csv_features.items()}
+    # csv_features_dict = {name: np.array(value)
+    #                             for name, value in csv_features.items()}
 
-    model.fit(x=csv_features_dict, y=csv_labels, epochs=10)
+    # model.fit(x=csv_features_dict, y=csv_labels, epochs=10)
     return model
 
 
