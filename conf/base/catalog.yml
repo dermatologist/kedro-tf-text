@@ -45,3 +45,7 @@ datasetinmemory:
 bert_model:
   type: kedro_tf_text.extras.datasets.bert_model_download.BertModelDownload
   url: "https://tfhub.dev/tensorflow/bert_en_uncased_L-12_H-768_A-12/1"
+
+bert_model_saved:
+  type: tensorflow.TensorFlowModelDataset
+  filepath: data/06_models/bert-tf

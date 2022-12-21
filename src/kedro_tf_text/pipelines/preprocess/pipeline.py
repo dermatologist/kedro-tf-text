@@ -50,7 +50,7 @@ def create_bert_pipeline(**kwargs) -> Pipeline:
                     node(
                         build_bert_model,
                         inputs=["bert_model", "params:bert_model"],
-                        outputs="datasetinmemory",
+                        outputs="bert_model_saved",
                         name="build_bert_model"
                     ),
                     ])
