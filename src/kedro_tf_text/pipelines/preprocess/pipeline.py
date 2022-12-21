@@ -19,13 +19,13 @@ def create_glove_embedding_pipeline(**kwargs) -> Pipeline:
 
                     node(
                         func=json_processed_text,
-                        inputs=["text_data", "params:glove_embedding"],
+                        inputs=["text_data", "params:embedding"],
                         outputs="vocab_json",
                         name="create_vocab"
                     ),
                     node(
                         func=create_glove_embeddings,
-                        inputs=["pretrained_embedding", "vocab_json", "params:glove_embedding"],
+                        inputs=["pretrained_embedding", "vocab_json", "params:embedding"],
                         outputs="glove_embedding",
                         name="create_glove_embeddings"
                     ),
@@ -37,7 +37,7 @@ def pickle_processed_text_pipeline(**kwargs) -> Pipeline:
 
                     node(
                         pickle_processed_text,
-                        inputs=["text_data", "params:pickle_processed_text"],
+                        inputs=["text_data", "params:embedding"],
                         outputs="processed_text",
                         name="pickle_processed_text"
                     ),
