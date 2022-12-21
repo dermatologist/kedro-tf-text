@@ -9,8 +9,8 @@ import sys
 from absl import flags
 import re
 from nltk.corpus import stopwords
-from keras.preprocessing.sequence import pad_sequences
-from keras.preprocessing.text import Tokenizer
+from keras_preprocessing.sequence import pad_sequences
+from keras_preprocessing.text import Tokenizer
 import pandas as pd
 import numpy as np
 from typing import Any, Callable, Dict, List, Tuple
