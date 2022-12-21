@@ -19,3 +19,4 @@ tensorflow-hub
 sentencepiece
 bert-tokenizer
 bert-tensorflow #https://github.com/google-research/bert/issues/1133
+tensorflow-text
