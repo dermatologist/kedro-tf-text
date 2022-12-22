@@ -341,20 +341,6 @@ def prepare_for_bert(text_array: List, tokenizer: Any, parameters: Dict):
 
     return ids, segments, masks
 
-# https://tfhub.dev/tensorflow/bert_en_uncased_L-12_H-768_A-12/4
-def build_bert_model(bert_model:Any, parameters: Dict) -> tf.keras.Model:
-    text_input = tf.keras.layers.Input(shape=(), dtype=tf.string)
-    (encoder, preprocessor) = bert_model
-
-    encoder_inputs = preprocessor(text_input)
-    outputs = encoder(encoder_inputs)
-    pooled_output = outputs["pooled_output"]      # [batch_size, 768].
-    sequence_output = outputs["sequence_output"]  # [batch_size, seq_length, 768].
-
-
-    embedding_model = tf.keras.Model(text_input, pooled_output)
-    return embedding_model
-
 def preprocess_text_bert(data: pd.DataFrame, bert_model: Any,  parameters: Dict) -> pd.DataFrame:
     """Preprocesses text
 
@@ -375,13 +361,13 @@ def preprocess_text_bert(data: pd.DataFrame, bert_model: Any,  parameters: Dict)
 
 
 #### TF method
-
+# https://tfhub.dev/tensorflow/bert_en_uncased_L-12_H-768_A-12/4
 def get_tf_bert_model(bert_model: Any, parameters: Dict) -> tf.keras.Model:
-    (preprocessing_layer, encoder) = bert_model
-    text_input = tf.keras.layers.Input(shape=(), dtype=tf.string, name='text')
-    encoder_inputs = preprocessing_layer(text_input)
+    (encoder, preprocessor) = bert_model
+    text_input = tf.keras.layers.Input(shape=(), dtype=tf.string)
+    encoder_inputs = preprocessor(text_input)
     outputs = encoder(encoder_inputs)
-    net = outputs['pooled_output']
-    net = tf.keras.layers.Dropout(0.1)(net)
-    net = tf.keras.layers.Dense(1, activation=None, name='classifier')(net)
-    return tf.keras.Model(text_input, net)
+    pooled_output = outputs["pooled_output"]      # [batch_size, 768].
+    sequence_output = outputs["sequence_output"]  # [batch_size, seq_length, 768].
+    embedding_model = tf.keras.Model(text_input, pooled_output)
+    return embedding_model
