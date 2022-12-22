@@ -39,7 +39,7 @@ class BertModelDownload(AbstractDataSet):
         encoder = hub.KerasLayer(
             self._encoder_url,
             trainable=True)
-        return (preprocessor, encoder)
+        return (encoder, preprocessor)
 
     def _save(self, data: Any) -> None:
         """Saves the BERT model to the specified location.
