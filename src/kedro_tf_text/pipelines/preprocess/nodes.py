@@ -370,7 +370,7 @@ def build_bert_model(bert_model:Any, parameters: Dict) -> tf.keras.Model:
     model = tf.keras.Model(inputs=encoder_inputs, outputs=seq_out["pooled_output"])
     model.compile(loss='categorical_crossentropy', optimizer=tf.keras.optimizers.Adam(
         learning_rate=.001), metrics=['accuracy'])
-    return model
+    return encoder
 
 
 def preprocess_text_bert(data: pd.DataFrame, bert_model: Any,  parameters: Dict) -> pd.DataFrame:
