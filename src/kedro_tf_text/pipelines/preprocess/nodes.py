@@ -341,7 +341,7 @@ def prepare_for_bert(text_array: List, tokenizer: Any, parameters: Dict):
 
     return ids, segments, masks
 
-
+# https://tfhub.dev/tensorflow/bert_en_uncased_L-12_H-768_A-12/4
 def build_bert_model(bert_model:Any, parameters: Dict) -> tf.keras.Model:
     """Builds BERT model
 
@@ -353,22 +353,21 @@ def build_bert_model(bert_model:Any, parameters: Dict) -> tf.keras.Model:
         tf.keras.Model: _description_
     """
     max_length = parameters['MAX_LENGTH']
-    input_ids = tf.keras.layers.Input(shape=(max_length,), dtype=tf.int32, name="input_ids")
-    input_masks = tf.keras.layers.Input(shape=(max_length,), dtype=tf.int32, name="input_masks")
-    input_segments = tf.keras.layers.Input(shape=(max_length,), dtype=tf.int32, name="input_segments")
-
-    (bert_layer, vocab_file, tokenizer) = bert_model
-
-    den_out, seq_out = bert_layer([input_ids, input_masks, input_segments])
-
-    X = layers.LSTM(128)(seq_out)
+    (preprocessor, encoder) = bert_model
+    encoder_inputs = dict(
+        input_word_ids=tf.keras.layers.Input(shape=(max_length,), dtype=tf.int32),
+        input_mask=tf.keras.layers.Input(shape=(max_length,), dtype=tf.int32),
+        input_type_ids=tf.keras.layers.Input(shape=(max_length,), dtype=tf.int32),
+    )
+    seq_out = encoder(encoder_inputs)
+    # X = layers.LSTM(128)(seq_out)
+    # # X = layers.Dropout(0.5)(X)
+    # # X = layers.Dense(256, activation="relu")(X)
+    # # ! The classification layer below will be removed before fusion
     # X = layers.Dropout(0.5)(X)
-    # X = layers.Dense(256, activation="relu")(X)
-    # ! The classification layer below will be removed before fusion
-    X = layers.Dropout(0.5)(X)
-    output = layers.Dense(parameters["NCLASSES"], activation='softmax')(X)
+    # output = layers.Dense(parameters["NCLASSES"], activation='softmax')(X)
 
-    model = tf.keras.Model(inputs=[input_ids, input_masks, input_segments], outputs=[output])
+    model = tf.keras.Model(inputs=encoder_inputs, outputs=seq_out["pooled_output"])
     model.compile(loss='categorical_crossentropy', optimizer=tf.keras.optimizers.Adam(
         learning_rate=.001), metrics=['accuracy'])
     return model
