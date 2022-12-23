@@ -369,5 +369,8 @@ def get_tf_bert_model(bert_model: Any, parameters: Dict) -> tf.keras.Model:
     outputs = encoder(encoder_inputs)
     pooled_output = outputs["pooled_output"]      # [batch_size, 768].
     sequence_output = outputs["sequence_output"]  # [batch_size, seq_length, 768].
-    embedding_model = tf.keras.Model(text_input, pooled_output)
+    # Read the documentation of the BERT model to understand the output format
+    # ! The answer below explains which output to use
+    # https://stackoverflow.com/questions/71980457/how-to-pass-bert-embeddings-to-an-lstm-layer
+    embedding_model = tf.keras.Model(text_input, sequence_output)
     return embedding_model
