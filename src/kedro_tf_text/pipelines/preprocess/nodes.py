@@ -15,10 +15,10 @@ from keras_preprocessing.text import Tokenizer
 import pandas as pd
 import numpy as np
 from typing import Dict
-from keras.layers import Embedding
+from keras.layers import Embedding, Dense
 import string
 from gensim.models import Word2Vec
-
+import tensorflow as tf
 TAG_RE = re.compile(r'<[^>]+>')
 
 def clean_medical(text_list):
@@ -45,7 +45,6 @@ def list_to_seq(text_list, num_words, seq_len):
 def create_word2vec(csv_data:pd.DataFrame, parameters: Dict):
     clean_data = clean_medical(csv_data[parameters['REPORT_FIELD']].tolist())
     sentences = [line.lower().split(' ') for line in clean_data]
-    print(sentences)
     model = Word2Vec(sentences, min_count=3)
     return model # glove saves model as a pickle file
 
@@ -76,7 +75,13 @@ def gensim_to_keras_embedding(model, parameters: Dict):
         weights=[weights],
         trainable=parameters['train_embedding'],
     )
-    return layer
+    text_input = tf.keras.layers.Input(shape=weights.shape[0], dtype=tf.float32)
+    output = Dense(128, activation="softmax")(layer)
+    # ! Layers below will be removed during fusion
+    output = Dense(64, activation="softmax")(output)
+    output = Dense(1, activation="softmax")(output)
+    model_keras = tf.keras.Model(inputs=text_input, outputs=output)
+    return model_keras
 
 def _process_csv(csv_data:pd.DataFrame, parameters: Dict):
 
