@@ -3,6 +3,9 @@
 @author: Bell Eapen
 @date: 2021-05-01
 
+Impliments:
+    1. Convert a word2vec model to glove embeddings
+
 """
 
 import sys
@@ -15,10 +18,8 @@ import pandas as pd
 import numpy as np
 from typing import Any, Callable, Dict, List, Tuple
 from keras.layers import Embedding
-# from deeptables.models.deeptable import DeepTable, ModelConfig
-# from deeptables.models.deepnets import DeepFM
 import tensorflow as tf
-from tensorflow.keras import layers
+from keras import layers
 import string
 
 TAG_RE = re.compile(r'<[^>]+>')
@@ -56,13 +57,14 @@ def _process_csv(csv_data:pd.DataFrame, parameters: Dict):
         text_list=clean_data, num_words=MAX_NUM_WORDS, seq_len=MAX_SEQ_LENGTH)
     return (seq_data, vocab)
 
-    """_summary_
+"""_summary_
 
-    From a csv file with an ID field and report field, extracts the sequence of tokens and the vocabulary
-    seq_data can be pickled and used as input to the model
+From a csv file with an ID field and report field, extracts the sequence of tokens and the vocabulary
+seq_data can be pickled and used as input to the model
 
-    """
+"""
 def pickle_processed_text(csv_data:pd.DataFrame, parameters: Dict):
+    # TODO: rename this function to something more meaningful
     """_summary_
 
     Args:
@@ -75,7 +77,9 @@ def pickle_processed_text(csv_data:pd.DataFrame, parameters: Dict):
     (seq_data, vocab) = _process_csv(csv_data, parameters)
     return dict(zip(list(csv_data[parameters['ID_FIELD']]), seq_data))
 
+
 def json_processed_text(csv_data:pd.DataFrame, parameters: Dict):
+    # TODO: rename this function to something more meaningful
     """_summary_
 
     Args:
@@ -153,7 +157,7 @@ def tabular_model(csv_data: pd.DataFrame, parameters: Dict):
         parameters (Dict): _description_
 
     Returns:
-        _type_: _description_
+        _type_: A compiled Keras model of tabular data
     """
 
     csv_features = csv_data.copy()

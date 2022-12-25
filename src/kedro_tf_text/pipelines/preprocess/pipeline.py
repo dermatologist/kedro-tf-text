@@ -10,10 +10,11 @@ from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, pi
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline([])
 
-    """_summary_: This is a embedding pipeline 'preprocess'
-    call this modular pipeline in your main pipeline with the following code:
-    https://kedro.readthedocs.io/en/stable/nodes_and_pipelines/modular_pipelines.html
-    """
+"""_summary_: This is a embedding pipeline 'preprocess'
+call this modular pipeline in your main pipeline with the following code:
+https://kedro.readthedocs.io/en/stable/nodes_and_pipelines/modular_pipelines.html
+"""
+
 def create_glove_embedding_pipeline(**kwargs) -> Pipeline:
     return pipeline([
 
