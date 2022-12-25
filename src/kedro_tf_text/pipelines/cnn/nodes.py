@@ -2,6 +2,7 @@
 This is a boilerplate pipeline 'model'
 generated using Kedro 0.18.1
 """
+from typing import Dict
 from keras.layers import Activation, Input, Dense, Flatten, Dropout, Embedding
 from keras.layers.convolutional import Conv1D, MaxPooling1D
 from keras.layers import concatenate
@@ -22,7 +23,7 @@ def create_channel(x, filter_size, feature_map):
     return x
 
 
-def create_cnn_model(embedding_layer=None):
+def create_cnn_model(embedding_layer, params: Dict):
 
     #TODO:  Params
     num_words = None
