@@ -2,10 +2,52 @@
 This is a boilerplate pipeline 'preprocess'
 generated using Kedro 0.18.1
 """
-# No pipelines registered
-
 from kedro.pipeline import Pipeline, node, pipeline
-from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, pickle_processed_text, json_processed_text, preprocess_text_bert, get_tf_bert_model
+from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, pickle_processed_text, json_processed_text, preprocess_text_bert, get_tf_bert_model, tabular_model
+
+
+glove_embedding = Pipeline([
+    node(
+        func=json_processed_text, # return a json file with the vocab
+        # csv file ID | Long line of text or report. type pandas.CSVDataSet
+        inputs=["text_data", "params:embedding"],
+        # type: json.JSONDataSet
+        outputs="vocab_json",
+        name="create_vocab_json",
+        tags=["preprocess"]
+    ),
+    node(
+        func=create_glove_embeddings, # return the glove embedding
+        # pretrained word2vec embedding as text.TextDataSet Example: embd1000.txt
+        # vocab_json as json.JSONDataSet (previous node)
+        inputs=["pretrained_embedding", "vocab_json", "params:embedding"],
+        outputs="glove_embedding", #pickle.PickleDataSet
+        name="create_glove_embeddings",
+        tags=["preprocess"]
+    ),
+])
+
+tabular_model_pipeline = Pipeline([
+    node(
+        func=tabular_model, # returns a keras model of the tabular data
+        # tabular_data as pandas.CSVDataSet with ## ID | included | fields | excluded | fields | outcome (y)
+        inputs=["tabular_data", "params:tabular"],
+        outputs="tabular_model", #pickle.PickleDataSet
+        name="create_tabular_model",
+        tags=["tabular"]
+    ),
+])
+
+process_text_pipeline = Pipeline([
+    node(
+        func=pickle_processed_text, # returns a keras dataset as pickle file with the processed text
+        # csv file ID | Long line of text or report. type pandas.CSVDataSet
+        inputs=["text_data", "params:embedding"],
+        outputs="processed_text", #pickle.PickleDataSet
+        name="pickle_processed_text",
+        tags=["preprocess"]
+    ),
+])
 
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline([])
@@ -16,33 +58,15 @@ https://kedro.readthedocs.io/en/stable/nodes_and_pipelines/modular_pipelines.htm
 """
 
 def create_glove_embedding_pipeline(**kwargs) -> Pipeline:
-    return pipeline([
+    return glove_embedding
 
-                    node(
-                        func=json_processed_text,
-                        inputs=["text_data", "params:embedding"],
-                        outputs="vocab_json",
-                        name="create_vocab"
-                    ),
-                    node(
-                        func=create_glove_embeddings,
-                        inputs=["pretrained_embedding", "vocab_json", "params:embedding"],
-                        outputs="glove_embedding",
-                        name="create_glove_embeddings"
-                    ),
 
-    ])
+def create_tabular_model_pipeline(**kwargs) -> Pipeline:
+    return tabular_model_pipeline
+
 
 def pickle_processed_text_pipeline(**kwargs) -> Pipeline:
-    return pipeline([
-
-                    node(
-                        pickle_processed_text,
-                        inputs=["text_data", "params:embedding"],
-                        outputs="processed_text",
-                        name="pickle_processed_text"
-                    ),
-    ])
+    return process_text_pipeline
 
 
 def create_bert_pipeline(**kwargs) -> Pipeline:

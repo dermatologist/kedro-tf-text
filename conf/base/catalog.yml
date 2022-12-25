@@ -3,9 +3,16 @@
 # Documentation for this file format can be found in "The Data Catalog"
 # Link: https://kedro.readthedocs.io/en/stable/data/data_catalog.html
 
+## ID | Long line of text
 text_data:
   type: pandas.CSVDataSet
   filepath: data/01_raw/test_report.csv
+
+## ID | included | fields | excluded | fields | outcome (y)
+tabular_data:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/test_dataset.csv
+
 
 pretrained_embedding:
   type: text.TextDataSet
