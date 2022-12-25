@@ -113,7 +113,6 @@ def pickle_processed_text(csv_data:pd.DataFrame, parameters: Dict):
         Dict: returns a dictionary with ID as key and sequence of tokens as value
     """
     (seq_data, vocab) = _process_csv(csv_data, parameters)
-    print(seq_data, vocab)
     return dict(zip(list(csv_data[parameters['ID_FIELD']]), seq_data))
 
 
