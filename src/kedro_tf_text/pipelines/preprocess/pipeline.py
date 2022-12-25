@@ -3,7 +3,7 @@ This is a boilerplate pipeline 'preprocess'
 generated using Kedro 0.18.1
 """
 from kedro.pipeline import Pipeline, node, pipeline
-from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, pickle_processed_text, json_processed_text, preprocess_text_bert, get_tf_bert_model
+from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, pickle_processed_text, json_processed_text
 
 
 glove_embedding = Pipeline([
@@ -50,32 +50,6 @@ https://kedro.readthedocs.io/en/stable/nodes_and_pipelines/modular_pipelines.htm
 def create_glove_embedding_pipeline(**kwargs) -> Pipeline:
     return glove_embedding
 
-
-
-
 def pickle_processed_text_pipeline(**kwargs) -> Pipeline:
     return process_text_pipeline
 
-
-def create_bert_pipeline(**kwargs) -> Pipeline:
-    return pipeline([
-
-                    node(
-                        get_tf_bert_model,
-                        inputs=["bert_model", "params:bert_model"],
-                        outputs="bert_model_saved",
-                        name="get_tf_bert_model"
-                    ),
-                    ])
-
-
-def create_preprocess_bert_pipeline(**kwargs) -> Pipeline:
-    return pipeline([
-
-                    node(
-                        preprocess_text_bert,
-                        inputs=["text_data", "bert_model", "params:bert_model"],
-                        outputs="datasetinmemory",
-                        name="preprocess_bert_model"
-                    ),
-                    ])

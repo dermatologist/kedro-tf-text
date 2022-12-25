@@ -8,18 +8,14 @@ Impliments:
 
 """
 
-import sys
-from absl import flags
 import re
 from nltk.corpus import stopwords
 from keras_preprocessing.sequence import pad_sequences
 from keras_preprocessing.text import Tokenizer
 import pandas as pd
 import numpy as np
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Dict
 from keras.layers import Embedding
-import tensorflow as tf
-from keras import layers
 import string
 
 TAG_RE = re.compile(r'<[^>]+>')
@@ -146,137 +142,3 @@ def get_vocab_size(tokenizer):
     # calculate vocabulary size
     return len(tokenizer.word_index) + 1
 ##########
-
-## Cleaning text functions for BERT ##
-# Ref: https://github.com/artelab/Image-and-Text-fusion-for-UPMC-Food-101-using-BERT-and-CNNs/blob/main/BERT_LSTM.ipynb
-# https://gist.github.com/dermatologist/062c46eafe8c118334a004f6cfab663d
-def _preprocess_text(sen: str) -> str:
-    # Removing html tags
-    sentence = remove_tags(sen)
-
-    # Remove punctuations and numbers
-    sentence = re.sub('[^a-zA-Z]', ' ', sentence)
-
-    # Single character removal
-    sentence = re.sub(r"\s+[a-zA-Z]\s+", ' ', sentence)
-
-    # Removing multiple spaces
-    sentence = re.sub(r'\s+', ' ', sentence)
-
-    sentence = sentence.lower()
-
-    return sentence
-
-# https://numpy.org/doc/stable/reference/generated/numpy.vectorize.html
-vec_preprocess_text = np.vectorize(_preprocess_text)
-
-def remove_tags(text: str) -> str:
-    return TAG_RE.sub('', text)
-
-# Preprocessing of texts according to BERT
-
-
-def _get_masks(text: str, max_length: int, tokenizer: Any):
-    """Mask for padding"""
-    tokens = tokenizer.tokenize(text)
-    tokens = ["[CLS]"] + tokens + ["[SEP]"]
-    length = len(tokens)
-    if length > max_length:
-        tokens = tokens[:max_length]
-    return np.asarray([1]*len(tokens) + [0] * (max_length - len(tokens)))
-
-
-vec_get_masks = np.vectorize(_get_masks, signature='(),(),()->(n)')
-
-
-def _get_segments(text: str, max_length: int, tokenizer: Any):
-    """Segments: 0 for the first sequence, 1 for the second"""
-    tokens = tokenizer.tokenize(text)
-    tokens = ["[CLS]"] + tokens + ["[SEP]"]
-    length = len(tokens)
-    if length > max_length:
-        tokens = tokens[:max_length]
-
-    segments = []
-    current_segment_id = 0
-    with_tags = ["[CLS]"] + tokens + ["[SEP]"]
-    token_ids = tokenizer.convert_tokens_to_ids(tokens)
-
-    for token in tokens:
-        segments.append(current_segment_id)
-        if token == "[SEP]":
-            current_segment_id = 1
-    return np.asarray(segments + [0] * (max_length - len(tokens)))
-
-
-vec_get_segments = np.vectorize(_get_segments, signature='(),(),()->(n)')
-
-
-def _get_ids(text: str, max_length: int, tokenizer: Any):
-
-    # TODO: Fix this https://github.com/google-research/bert/issues/1133
-    sys.argv = ['preserve_unused_tokens=False']
-    flags.FLAGS(sys.argv)
-
-    """Token ids from Tokenizer vocab"""
-    tokens = tokenizer.tokenize(text)
-    tokens = ["[CLS]"] + tokens + ["[SEP]"]
-    length = len(tokens)
-    if length > max_length:
-        tokens = tokens[:max_length]
-
-    token_ids = tokenizer.convert_tokens_to_ids(tokens)
-    input_ids = np.asarray(token_ids + [0] * (max_length-length))
-    return input_ids
-
-
-vec_get_ids = np.vectorize(_get_ids, signature='(),(),()->(n)')
-
-def prepare_for_bert(text_array: List, tokenizer: Any, parameters: Dict):
-    max_length = parameters['MAX_LENGTH']
-    """Prepares text for BERT"""
-    ids = vec_get_ids(text_array,
-                      max_length,
-                      tokenizer).squeeze()
-    masks = vec_get_masks(text_array,
-                          max_length,
-                          tokenizer).squeeze()
-    segments = vec_get_segments(text_array,
-                                max_length,
-                                tokenizer).squeeze()
-
-    return ids, segments, masks
-
-def preprocess_text_bert(data: pd.DataFrame, bert_model: Any,  parameters: Dict) -> pd.DataFrame:
-    """Preprocesses text
-
-    Args:
-        data (pd.DataFrame): _description_
-        parameters (Dict): _description_
-
-    Returns:
-        pd.DataFrame: _description_
-    """
-
-    (bert_layer, vocab_file, tokenizer) = bert_model
-    text = parameters['REPORT_FIELD']
-    max_length = parameters['MAX_LENGTH']
-    processed_data = vec_preprocess_text(data[text].values)
-    ids, segments, masks = prepare_for_bert(processed_data, tokenizer, parameters)
-    return ids, segments, masks
-
-
-#### TF method
-# https://tfhub.dev/tensorflow/bert_en_uncased_L-12_H-768_A-12/4
-def get_tf_bert_model(bert_model: Any, parameters: Dict) -> tf.keras.Model:
-    (encoder, preprocessor) = bert_model
-    text_input = tf.keras.layers.Input(shape=(), dtype=tf.string)
-    encoder_inputs = preprocessor(text_input)
-    outputs = encoder(encoder_inputs)
-    pooled_output = outputs["pooled_output"]      # [batch_size, 768].
-    sequence_output = outputs["sequence_output"]  # [batch_size, seq_length, 768].
-    # Read the documentation of the BERT model to understand the output format
-    # ! The answer below explains which output to use
-    # https://stackoverflow.com/questions/71980457/how-to-pass-bert-embeddings-to-an-lstm-layer
-    embedding_model = tf.keras.Model(text_input, sequence_output)
-    return embedding_model
