@@ -53,6 +53,11 @@ def _process_csv(csv_data:pd.DataFrame, parameters: Dict):
         text_list=clean_data, num_words=MAX_NUM_WORDS, seq_len=MAX_SEQ_LENGTH)
     return (seq_data, vocab)
 
+
+def process_csv_text(csv_data:pd.DataFrame, parameters: Dict):
+    (text_as_seq, vocab) = _process_csv(csv_data, parameters)
+    return dict(processed_text=zip(list(csv_data[parameters['ID_FIELD']]), text_as_seq), vocab=vocab)
+
 """_summary_
 
 From a csv file with an ID field and report field, extracts the sequence of tokens and the vocabulary
@@ -71,6 +76,7 @@ def pickle_processed_text(csv_data:pd.DataFrame, parameters: Dict):
         Dict: returns a dictionary with ID as key and sequence of tokens as value
     """
     (seq_data, vocab) = _process_csv(csv_data, parameters)
+    print(seq_data, vocab)
     return dict(zip(list(csv_data[parameters['ID_FIELD']]), seq_data))
 
 

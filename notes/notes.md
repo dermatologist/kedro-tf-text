@@ -15,7 +15,14 @@ pipeline = [
 
 ```
 
+## Processed text as pkl
 
+### To load
+#### taking the intersection of ids of both datasets
+ids   = list(set(list(text.keys())) & set(list(img.keys())))
+text  = [text[patient] for patient in ids]
+img   = [img[patient] for patient in ids]
+y     = [original_data[original_data['ID'] == patient].Labels.item() for patient in ids]
 ## Ref: https://github.com/faikaydin/medical-multimodal-with-transfer-learning
 
     last_layer = deepmodel.model.layers[-2].output
