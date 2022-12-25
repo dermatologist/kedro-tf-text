@@ -15,10 +15,10 @@ from keras_preprocessing.text import Tokenizer
 import pandas as pd
 import numpy as np
 from typing import Dict
-from keras.layers import Embedding, Dense
+from keras.layers import Embedding
 import string
 from gensim.models import Word2Vec
-import tensorflow as tf
+
 TAG_RE = re.compile(r'<[^>]+>')
 
 def clean_medical(text_list):
@@ -75,13 +75,7 @@ def gensim_to_keras_embedding(model, parameters: Dict):
         weights=[weights],
         trainable=parameters['train_embedding'],
     )
-    text_input = tf.keras.layers.Input(shape=weights.shape[0], dtype=tf.float32)
-    output = Dense(128, activation="softmax")(layer.output)
-    # ! Layers below will be removed during fusion
-    output = Dense(64, activation="softmax")(output)
-    output = Dense(1, activation="softmax")(output)
-    model_keras = tf.keras.Model(inputs=text_input, outputs=output)
-    return model_keras
+    return layer
 
 def _process_csv(csv_data:pd.DataFrame, parameters: Dict):
 
