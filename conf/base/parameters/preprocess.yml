@@ -12,4 +12,5 @@ embedding:
   ID_FIELD: name
   TARGET: dm # The header of the dependant variable
   DROP: ["name"]
+  train_embedding: False
 

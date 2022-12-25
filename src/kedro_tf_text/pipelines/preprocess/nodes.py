@@ -17,6 +17,7 @@ import numpy as np
 from typing import Dict
 from keras.layers import Embedding
 import string
+from gensim.models import Word2Vec
 
 TAG_RE = re.compile(r'<[^>]+>')
 
@@ -39,6 +40,43 @@ def list_to_seq(text_list, num_words, seq_len):
     sequences = tokenizer.texts_to_sequences(text_list)
     padded_sequences = pad_sequences(sequences, maxlen=seq_len, padding='post')
     return padded_sequences,tokenizer.word_index
+
+
+def create_word2vec(csv_data:pd.DataFrame, parameters: Dict):
+    clean_data = clean_medical(csv_data[parameters['REPORT_FIELD']].tolist())
+    sentences = [line.lower().split(' ') for line in clean_data]
+    print(sentences)
+    model = Word2Vec(sentences, min_count=3)
+    return model # glove saves model as a pickle file
+
+
+def gensim_to_keras_embedding(model, parameters: Dict):
+    """Get a Keras 'Embedding' layer with weights set from Word2Vec model's learned word embeddings.
+
+    Parameters
+    ----------
+    train_embeddings : bool
+        If False, the returned weights are frozen and stopped from being updated.
+        If True, the weights can / will be further updated in Keras.
+
+    Returns
+    -------
+    `keras.layers.Embedding`
+        Embedding layer, to be used as input to deeper network layers.
+
+    """
+    keyed_vectors = model.wv  # structure holding the result of training
+    weights = keyed_vectors.vectors  # vectors themselves, a 2D numpy array
+    # which row in `weights` corresponds to which word?
+    index_to_key = keyed_vectors.index_to_key
+
+    layer = Embedding(
+        input_dim=weights.shape[0],
+        output_dim=weights.shape[1],
+        weights=[weights],
+        trainable=parameters['train_embedding'],
+    )
+    return layer
 
 def _process_csv(csv_data:pd.DataFrame, parameters: Dict):
 

@@ -3,9 +3,10 @@ This is a boilerplate pipeline 'preprocess'
 generated using Kedro 0.18.1
 """
 from kedro.pipeline import Pipeline, node, pipeline
-from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, pickle_processed_text, json_processed_text
+from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, create_word2vec, gensim_to_keras_embedding, pickle_processed_text, json_processed_text
 
 
+# ! Deprecated, Use word2vec_embedding_pipeline instead
 glove_embedding = Pipeline([
     node(
         func=json_processed_text, # return a json file with the vocab
@@ -39,6 +40,23 @@ process_text_pipeline = Pipeline([
     ),
 ])
 
+word2vec_embedding = Pipeline([
+    node(
+        func=create_word2vec, # return the word2vec embedding
+        inputs=["text_data", "params:embedding"],
+        outputs="word2vec_embedding", #pickle.PickleDataSet
+        name="create_word2vec_embeddings",
+        tags=["preprocess"]
+    ),
+    node(
+        func=gensim_to_keras_embedding, # return the keras embedding
+        inputs=["word2vec_embedding", "params:embedding"],
+        outputs="glove_embedding", #pickle.PickleDataSet
+        name="create_keras_embeddings",
+        tags=["preprocess"]
+    ),
+])
+
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline([])
 
@@ -53,3 +71,5 @@ def create_glove_embedding_pipeline(**kwargs) -> Pipeline:
 def pickle_processed_text_pipeline(**kwargs) -> Pipeline:
     return process_text_pipeline
 
+def create_word2vec_embedding_pipeline(**kwargs) -> Pipeline:
+    return word2vec_embedding
