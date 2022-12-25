@@ -3,3 +3,9 @@
 #
 # Documentation for this file format can be found in "Parameters"
 # Link: https://kedro.readthedocs.io/en/0.18.4/kedro_project_setup/configuration.html#parameters
+tabular:
+  ID_FIELD: name
+  TARGET: dm # The header of the dependant variable
+  DROP: ["name"]
+  EPOCHS: 10
+  DENSE_LAYER: 64

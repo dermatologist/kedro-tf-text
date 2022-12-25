@@ -3,7 +3,7 @@ This is a boilerplate pipeline 'preprocess'
 generated using Kedro 0.18.1
 """
 from kedro.pipeline import Pipeline, node, pipeline
-from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, pickle_processed_text, json_processed_text, preprocess_text_bert, get_tf_bert_model, tabular_model
+from kedro_tf_text.pipelines.preprocess.nodes import create_glove_embeddings, pickle_processed_text, json_processed_text, preprocess_text_bert, get_tf_bert_model
 
 
 glove_embedding = Pipeline([
@@ -27,16 +27,6 @@ glove_embedding = Pipeline([
     ),
 ])
 
-tabular_model_pipeline = Pipeline([
-    node(
-        func=tabular_model, # returns a keras model of the tabular data
-        # tabular_data as pandas.CSVDataSet with ## ID | included | fields | excluded | fields | outcome (y)
-        inputs=["tabular_data", "params:tabular"],
-        outputs="tabular_model", #pickle.PickleDataSet
-        name="create_tabular_model",
-        tags=["tabular"]
-    ),
-])
 
 process_text_pipeline = Pipeline([
     node(
@@ -61,8 +51,6 @@ def create_glove_embedding_pipeline(**kwargs) -> Pipeline:
     return glove_embedding
 
 
-def create_tabular_model_pipeline(**kwargs) -> Pipeline:
-    return tabular_model_pipeline
 
 
 def pickle_processed_text_pipeline(**kwargs) -> Pipeline:

@@ -17,8 +17,3 @@ bert_model:
   NCLASSES: 3
   REPORT_FIELD: Text
   ID_FIELD: name
-tabular:
-  REPORT_FIELD: Text
-  ID_FIELD: name
-  TARGET: dm # The header of the dependant variable
-  DROP: ["name"]
