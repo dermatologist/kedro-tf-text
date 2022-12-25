@@ -76,7 +76,7 @@ def gensim_to_keras_embedding(model, parameters: Dict):
         trainable=parameters['train_embedding'],
     )
     text_input = tf.keras.layers.Input(shape=weights.shape[0], dtype=tf.float32)
-    output = Dense(128, activation="softmax")(layer)
+    output = Dense(128, activation="softmax")(layer.output)
     # ! Layers below will be removed during fusion
     output = Dense(64, activation="softmax")(output)
     output = Dense(1, activation="softmax")(output)
