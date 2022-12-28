@@ -16,7 +16,7 @@ pipeline = [
 ```
 
 ## Processed text as pkl
-
+text  = [text[patient] for patient in ids]
 ### To load
 #### taking the intersection of ids of both datasets
 ids   = list(set(list(text.keys())) & set(list(img.keys())))
