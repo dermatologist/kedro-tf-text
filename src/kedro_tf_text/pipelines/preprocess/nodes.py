@@ -86,7 +86,7 @@ def _process_csv_text(csv_data:pd.DataFrame, parameters: Dict):
 # * NODE
 def process_csv_text(csv_data:pd.DataFrame, model, parameters: Dict):
     sentences = _process_csv_text(csv_data, parameters)
-    sentences = [list(sentences)]
+    # sentences = [list(sentences)]
     # Encode the documents using the new embedding
     encoded_docs = [[model.wv[word] for word in sentence] for sentence in sentences]
     return encoded_docs
