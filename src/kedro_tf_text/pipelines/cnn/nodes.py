@@ -23,14 +23,14 @@ def create_channel(x, filter_size, feature_map):
     return x
 
 
-def create_cnn_model(embedding_layer, params: Dict):
+def create_cnn_model(embedding_layer, parameters: Dict):
 
     #TODO:  Params
     num_words = None
     embedding_dim = None
     filter_sizes = [3, 4, 5]
     feature_maps = [100, 100, 100]
-    max_seq_length = 100
+    max_seq_length = parameters['MAX_SEQ_LENGTH']
     dropout_rate = None
     multi = False
 
