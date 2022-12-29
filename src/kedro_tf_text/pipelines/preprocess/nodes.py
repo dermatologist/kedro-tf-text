@@ -45,7 +45,7 @@ def tokenize(doc):
 ## NODE
 def create_word2vec(csv_data:pd.DataFrame, parameters: Dict):
     sentences = _process_csv_text(csv_data, parameters)
-    model = Word2Vec(sentences, min_count=3)
+    model = Word2Vec(sentences, min_count=1) ## TODO add parameters
     return model # glove saves model as a pickle file
 
 ## NODE
