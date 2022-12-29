@@ -34,21 +34,21 @@ def tokenize(doc):
     tokens = [w for w in tokens if not w in stop_words]
     return ' '.join(tokens)
 
-def list_to_seq(text_list, num_words, seq_len):
-    tokenizer = Tokenizer(num_words=num_words)
-    tokenizer.fit_on_texts(text_list)
-    sequences = tokenizer.texts_to_sequences(text_list)
-    padded_sequences = pad_sequences(sequences, maxlen=seq_len, padding='post')
-    return padded_sequences,tokenizer.word_index
+# def list_to_seq(text_list, num_words, seq_len):
+#     tokenizer = Tokenizer(num_words=num_words)
+#     tokenizer.fit_on_texts(text_list)
+#     sequences = tokenizer.texts_to_sequences(text_list)
+#     padded_sequences = pad_sequences(sequences, maxlen=seq_len, padding='post')
+#     return padded_sequences,tokenizer.word_index
 
 
+## NODE
 def create_word2vec(csv_data:pd.DataFrame, parameters: Dict):
-    clean_data = clean_medical(csv_data[parameters['REPORT_FIELD']].tolist())
-    sentences = [line.lower().split(' ') for line in clean_data]
+    sentences = _process_csv_text(csv_data, parameters)
     model = Word2Vec(sentences, min_count=3)
     return model # glove saves model as a pickle file
 
-
+## NODE
 def gensim_to_keras_embedding(model, parameters: Dict):
     """Get a Keras 'Embedding' layer with weights set from Word2Vec model's learned word embeddings.
 
@@ -77,110 +77,12 @@ def gensim_to_keras_embedding(model, parameters: Dict):
     )
     return layer
 
-def _process_csv(csv_data:pd.DataFrame, parameters: Dict):
-
-    MAX_NUM_WORDS = parameters['MAX_NUM_WORDS']  # 15000
-    EMBEDDING_DIM = parameters['EMBEDDING_DIM']  # 300
-    MAX_SEQ_LENGTH = parameters['MAX_SEQ_LENGTH']  # 140
-
+def _process_csv_text(csv_data:pd.DataFrame, parameters: Dict):
     clean_data = clean_medical(csv_data[parameters['REPORT_FIELD']].tolist())
-    csv_data[parameters['REPORT_FIELD']] = clean_data
-    # on average 40 words per document, keeping it a bit more then that
-    seq_data, vocab = list_to_seq(
-        text_list=clean_data, num_words=MAX_NUM_WORDS, seq_len=MAX_SEQ_LENGTH)
-    return (seq_data, vocab)
-
+    sentences = [line.lower().split(' ') for line in clean_data]
+    return sentences
 
 def process_csv_text(csv_data:pd.DataFrame, parameters: Dict):
-    (text_as_seq, vocab) = _process_csv(csv_data, parameters)
-    return dict(processed_text=zip(list(csv_data[parameters['ID_FIELD']]), text_as_seq), vocab=vocab)
-
-"""_summary_
-
-From a csv file with an ID field and report field, extracts the sequence of tokens and the vocabulary
-seq_data can be pickled and used as input to the model
-
-"""
-def pickle_processed_text(csv_data:pd.DataFrame, parameters: Dict):
-    # TODO: rename this function to something more meaningful
-    """_summary_
-
-    Args:
-        csv_data (pd.DataFrame): data with ID and report fields
-        parameters (Dict): Kedro parameters
-
-    Returns:
-        Dict: returns a dictionary with ID as key and sequence of tokens as value
-    """
-    (seq_data, vocab) = _process_csv(csv_data, parameters)
-    return dict(zip(list(csv_data[parameters['ID_FIELD']]), seq_data))
-
-
-def json_processed_text(csv_data:pd.DataFrame, parameters: Dict):
-    # TODO: rename this function to something more meaningful
-    """_summary_
-
-    Args:
-        csv_data (pd.DataFrame): data with ID and report fields
-        parameters (Dict): Kedro parameters
-
-    Returns:
-        Dict: vocabulary
-    """
-    (seq_data, vocab) = _process_csv(csv_data, parameters)
-    return vocab
-
-
-def create_glove_embeddings(load_from_text_dataset: str, load_vocab_from_json: Dict, parameters: Dict) -> Dict:
-
-    # EMBEDDING
-    """
-        # in pipeline definition
-        node(
-            func=create_glove_embeddings,
-            inputs=["text_dataset", "json_dataset", "params:embeddings"],
-            outputs="pickle_dataset",
-            name="unique node name"
-        )
-    """
-    MAX_NUM_WORDS = parameters['MAX_NUM_WORDS']  # 15000
-    EMBEDDING_DIM = parameters['EMBEDDING_DIM'] #300
-    MAX_SEQ_LENGTH = parameters['MAX_SEQ_LENGTH'] #140
-
-    embeddings_index = {}
-    for line in load_from_text_dataset[1:].splitlines():
-        values = line.split()
-        word = values[0]
-        coefs = np.asarray(values[1:], dtype='float32')
-        embeddings_index[word] = coefs
-    embedding_matrix = np.zeros((MAX_NUM_WORDS, EMBEDDING_DIM))
-    for word, i in load_vocab_from_json.items():
-        if i >= MAX_NUM_WORDS:
-            continue
-        embedding_vector = embeddings_index.get(word)
-        if embedding_vector is not None:
-            embedding_matrix[i] = embedding_vector
-
-    return Embedding(input_dim=MAX_NUM_WORDS, output_dim=EMBEDDING_DIM,
-                     input_length=MAX_SEQ_LENGTH,
-                     weights=[embedding_matrix],
-                     trainable=True
-                     )
-
-
-########## https://machinelearningmastery.com/develop-n-gram-multichannel-convolutional-neural-network-sentiment-analysis/
-# calculate the maximum document length
-def max_length(lines):
-	return max([len(s.split()) for s in lines])
-
-# fit a tokenizer
-def create_tokenizer(lines):
-	tokenizer = Tokenizer()
-	tokenizer.fit_on_texts(lines)
-	return tokenizer
-
-
-def get_vocab_size(tokenizer):
-    # calculate vocabulary size
-    return len(tokenizer.word_index) + 1
-##########
+    sentences = _process_csv_text(csv_data, parameters)
+    sentences = [list(sentences)]
+    return sentences

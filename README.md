@@ -14,9 +14,9 @@ pip install git+https://github.com/dermatologist/kedro-tf-text.git
 | Name | Input | Output | Description | Params |
 | ---- | ---- | ---- | ---- | ---- |
 | download_bert | ["bert_model", "params:bert_model"] | "bert_model_saved" | Download and save bert model (See bert_model and bert_model_saved in catalog) | None |
-| cnn_text_pipeline | ["glove_embedding","params:cnn_text_model"] | cnn_text_model | creates a CNN text model from GloVe embedding layer | MAX_SEQ_LENGTH |
-| create_glove_embeddings | pretrained embedding as text, vocab as json | Glove Embedding | maximum # of words, Mac seq length & embedding dim | Generate glove embedding |
-|
+| cnn_text_pipeline | ["glove_embedding", "params:cnn_text_model"] | cnn_text_model | creates a CNN text model from GloVe embedding layer | MAX_SEQ_LENGTH |
+| process_text_pipeline | ["text_data", "params:embedding"] | "processed_text" (Pickle) | text to Gensim sentences | REPORT_FIELD |
+| glove_embedding | ["text_data", "params:embedding"] | "glove_embedding" (Pickle) | Create GloVe embedding | REPORT_FIELD |
 
 
 ## Catalog
