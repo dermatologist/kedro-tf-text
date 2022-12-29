@@ -17,7 +17,7 @@ pip install git+https://github.com/dermatologist/kedro-tf-text.git
 | cnn.cnn_text_pipeline | ["glove_embedding", "params:cnn_text_model"] | cnn_text_model | creates a CNN text model from GloVe embedding layer | MAX_SEQ_LENGTH |
 | preprocess.process_text_pipeline | ["text_data", "params:embedding"] | "processed_text" (Pickle) | text to Gensim sentences | REPORT_FIELD, ID, TARGET |
 | preprocess.glove_embedding | ["text_data", "params:embedding"] | "glove_embedding" (Pickle) | Create GloVe embedding | REPORT_FIELD, ID, TARGET |
-| tabular.tabular_model_pipeline | ["tabular_data", "params:tabular"] tabular_model (Pickle) | Create a model from tabular csv data | DROP, TARGET, EPOCHS, DENSE_LAYER |
+| tabular.tabular_model_pipeline | ["tabular_data", "params:tabular"] | tabular_model (Pickle) | Create a model from tabular csv data | DROP, TARGET, EPOCHS, DENSE_LAYER |
 
 ## Catalog
 ```
