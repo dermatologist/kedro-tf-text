@@ -11,7 +11,7 @@ process_text_pipeline = Pipeline([
     node(
         func=process_csv_text, # returns a keras dataset as pickle file with the processed text
         # csv file ID | Long line of text or report. type pandas.CSVDataSet
-        inputs=["text_data", "params:embedding"],
+        inputs=["text_data", "word2vec_embedding", "params:embedding"],
         outputs="processed_text",  # pickle.PickleDataSet
         name="pickle_processed_text",
         tags=["preprocess"]
