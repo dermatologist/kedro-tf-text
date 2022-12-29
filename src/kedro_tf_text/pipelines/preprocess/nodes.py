@@ -16,6 +16,7 @@ from keras.layers import Embedding
 import string
 from gensim.models import Word2Vec
 import numpy as np
+import logging
 
 TAG_RE = re.compile(r'<[^>]+>')
 
@@ -26,7 +27,6 @@ def clean_medical(text_list, max_seq_len=1000):
     text_list = [tokenize(single_string) for single_string in text_list]
     text_list = [TAG_RE.sub('', single_string) for single_string in text_list] # remove html tags
     text_list = [single_string.replace('  ', ' ') for single_string in text_list] # remove double spaces
-    # text_list += [''] * (max_seq_len - len(text_list)) # pad with empty strings
     return text_list
 
 def tokenize(doc):
@@ -89,5 +89,8 @@ def _process_csv_text(csv_data:pd.DataFrame, parameters: Dict):
 def process_csv_text(csv_data:pd.DataFrame, model, parameters: Dict):
     sentences = _process_csv_text(csv_data, parameters)
     # Encode the documents using the new embedding
-    encoded_docs = [[model.wv[word] for word in sentence] for sentence in sentences]
+    vocab = model.wv.key_to_index
+    logging.info(f"Vocab size: {len(vocab)}")
+    # encoded_docs = [[model.wv[word] for word in sentence] for sentence in sentences]
+    encoded_docs = [[vocab[word] for word in sentence] for sentence in sentences]
     return np.array(encoded_docs)
