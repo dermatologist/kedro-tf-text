@@ -10,14 +10,26 @@ This package consists of [Kedro pipelines](https://kedro.readthedocs.io/en/stabl
 pip install git+https://github.com/dermatologist/kedro-tf-text.git
 
 ```
-## Nodes
-| Name | Input | Output | Parameters | Description |
+## Pipelines
+| Name | Input | Output | Description | Params |
 | ---- | ---- | ---- | ---- | ---- |
-| pickle_processed_text | pd.Df | sequence of tokens | ID and TEXT fields, maximum # of words, Mac seq length & embedding dim | converts text to sequence of tokens |
-| json_processed_text | " | vocab as json | maximum # of words, Mac seq length & embedding dim | Generates vocab from text |
+| download_bert | ["bert_model", "params:bert_model"] | "bert_model_saved" | Download and save bert model (See bert_model and bert_model_saved in catalog) | None |
+| cnn_text_pipeline | ["glove_embedding","params:cnn_text_model"] | cnn_text_model | creates a CNN text model from GloVe embedding layer | MAX_SEQ_LENGTH |
 | create_glove_embeddings | pretrained embedding as text, vocab as json | Glove Embedding | maximum # of words, Mac seq length & embedding dim | Generate glove embedding |
 |
 
+
+## Catalog
+```
+bert_model:
+  type: kedro_tf_text.extras.datasets.bert_model_download.BertModelDownload
+  preprocessor_url: "https://tfhub.dev/tensorflow/bert_en_uncased_preprocess/3"
+  encoder_url: "https://tfhub.dev/tensorflow/bert_en_uncased_L-12_H-768_A-12/4"
+
+bert_model_saved:
+  type: tensorflow.TensorFlowModelDataset
+  filepath: data/06_models/bert-tf
+```
 
 ## Pipelines
 
