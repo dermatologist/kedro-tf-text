@@ -13,11 +13,11 @@ pip install git+https://github.com/dermatologist/kedro-tf-text.git
 ## Pipelines
 | Name | Input | Output | Description | Params |
 | ---- | ---- | ---- | ---- | ---- |
-| download_bert | ["bert_model", "params:bert_model"] | "bert_model_saved" | Download and save bert model (See bert_model and bert_model_saved in catalog) | None |
-| cnn_text_pipeline | ["glove_embedding", "params:cnn_text_model"] | cnn_text_model | creates a CNN text model from GloVe embedding layer | MAX_SEQ_LENGTH |
-| process_text_pipeline | ["text_data", "params:embedding"] | "processed_text" (Pickle) | text to Gensim sentences | REPORT_FIELD |
-| glove_embedding | ["text_data", "params:embedding"] | "glove_embedding" (Pickle) | Create GloVe embedding | REPORT_FIELD |
-
+| bert.download_bert | ["bert_model", "params:bert_model"] | "bert_model_saved" | Download and save bert model (See bert_model and bert_model_saved in catalog) | None |
+| cnn.cnn_text_pipeline | ["glove_embedding", "params:cnn_text_model"] | cnn_text_model | creates a CNN text model from GloVe embedding layer | MAX_SEQ_LENGTH |
+| preprocess.process_text_pipeline | ["text_data", "params:embedding"] | "processed_text" (Pickle) | text to Gensim sentences | REPORT_FIELD, ID, TARGET |
+| preprocess.glove_embedding | ["text_data", "params:embedding"] | "glove_embedding" (Pickle) | Create GloVe embedding | REPORT_FIELD, ID, TARGET |
+| tabular.tabular_model_pipeline | ["tabular_data", "params:tabular"] tabular_model (Pickle) | Create a model from tabular csv data | DROP, TARGET, EPOCHS, DENSE_LAYER |
 
 ## Catalog
 ```
