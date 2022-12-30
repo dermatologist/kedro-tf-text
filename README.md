@@ -3,7 +3,7 @@
 This package consists of [Kedro pipelines](https://kedro.readthedocs.io/en/stable/kedro.pipeline.html) for preprocessing text and tabular data.
 
 
-[![kedro-tf-text](https://github.com/dermatologist/kedro-tf-text/blob/develop/text.drawio.svg)](https://github.com/dermatologist/kedro-tf-text/blob/develop/text.drawio.svg)
+[![kedro-tf-text](https://github.com/dermatologist/kedro-tf-text/blob/develop/notes/text.drawio.svg)](https://github.com/dermatologist/kedro-tf-text/blob/develop/notes/text.drawio.svg)
 
 ## How to install
 ```
