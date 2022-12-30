@@ -2,7 +2,8 @@
 
 This package consists of [Kedro pipelines](https://kedro.readthedocs.io/en/stable/kedro.pipeline.html) for preprocessing text and tabular data.
 
-## **Work in progress. DO NOT USE**
+
+[![kedro-tf-text](https://github.com/dermatologist/kedro-tf-text/blob/develop/text.drawio.svg)](https://github.com/dermatologist/kedro-tf-text/blob/develop/text.drawio.svg)
 
 ## How to install
 ```
@@ -15,8 +16,8 @@ pip install git+https://github.com/dermatologist/kedro-tf-text.git
 | ---- | ---- | ---- | ---- | ---- |
 | bert.download_bert | ["bert_model", "params:bert_model"] | "bert_model_saved" | Download and save bert model (See bert_model and bert_model_saved in catalog) | None |
 | cnn.cnn_text_pipeline | ["glove_embedding", "params:cnn_text_model"] | cnn_text_model | creates a CNN text model from GloVe embedding layer | MAX_SEQ_LENGTH |
-| preprocess.process_text_pipeline | ["text_data", "word2vec_embedding", "params:embedding"] | "processed_text" (Pickle) | text to Gensim sentences | REPORT_FIELD, ID, TARGET |
 | preprocess.glove_embedding | ["text_data", "params:embedding"] | "glove_embedding" (Pickle) | Create GloVe embedding | REPORT_FIELD, ID, TARGET |
+| preprocess.process_text_pipeline | ["text_data", "word2vec_embedding", "params:embedding"] | "processed_text" (Pickle) | process text using the word index from Word2Vec model | REPORT_FIELD, ID, TARGET |
 | tabular.tabular_model_pipeline | ["tabular_data", "params:tabular"] | tabular_model (Pickle) | Create a model from tabular csv data | DROP, TARGET, EPOCHS, DENSE_LAYER |
 
 ## Catalog
@@ -29,6 +30,41 @@ bert_model:
 bert_model_saved:
   type: tensorflow.TensorFlowModelDataset
   filepath: data/06_models/bert-tf
+
+## ID | Long line of text | outcome (y)
+text_data:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/test_report.csv
+
+## ID | included | fields | excluded | fields | outcome (y)
+tabular_data:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/test_dataset.csv
+
+word2vec_embedding:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/word2vec-embedding.pkl
+
+glove_embedding:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/glove-embedding.pkl
+
+tabular_model:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/tabular_model.pkl
+
+processed_text:
+  type: pickle.PickleDataSet
+  filepath: data/03_primary/processed-text.pkl
+
+fusion_model:
+  type: tensorflow.TensorFlowModelDataset
+  filepath: data/07_model_output/fusion
+
+datasetinmemory:
+  type: MemoryDataSet
+  copy_mode: assign
+
 ```
 
 ## Pipelines
