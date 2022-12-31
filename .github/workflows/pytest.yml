@@ -32,4 +32,4 @@ jobs:
         python -m nltk.downloader stopwords
     - name: Test with pytest
       run: |
-        kedro test
+        pytest

@@ -48,6 +48,9 @@ chexnet_model:
   type: tensorflow.TensorFlowModelDataset
   filepath: data/06_models/densenet-chexnet
 
+cnn_model:
+  type: tensorflow.TensorFlowModelDataset
+  filepath: data/07_model_output/cnn-model
 
 fusion_model:
   type: tensorflow.TensorFlowModelDataset
