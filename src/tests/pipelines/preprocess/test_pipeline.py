@@ -41,8 +41,7 @@ class TestProjectContext:
     def test_project_path(self, project_context):
         assert project_context.project_path == Path.cwd()
 
-
-    @pytest.mark.order1
+    @pytest.mark.run(order=1)
     def test_w2v_model(self, project_context):
         csvpath = "data/01_raw/test_report.csv"
         w2vpath = "data/06_models/word2vec-embedding.pkl"
@@ -55,7 +54,7 @@ class TestProjectContext:
         assert data is not None
 
 
-    @pytest.mark.order2
+    @pytest.mark.run(order=2)
     def test_glove_model(self, project_context):
         w2vpath = "data/06_models/word2vec-embedding.pkl"
         glovepath = "data/06_models/glove-embedding.pkl"

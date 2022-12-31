@@ -378,9 +378,12 @@ pytest==6.2.5
     #   -r /home/beapen/repos/kedro-tf-text/src/requirements.txt
     #   pytest-cov
     #   pytest-mock
+    #   pytest-ordering
 pytest-cov==3.0.0
     # via -r /home/beapen/repos/kedro-tf-text/src/requirements.txt
 pytest-mock==1.13.0
+    # via -r /home/beapen/repos/kedro-tf-text/src/requirements.txt
+pytest-ordering==0.6
     # via -r /home/beapen/repos/kedro-tf-text/src/requirements.txt
 python-dateutil==2.8.2
     # via
