@@ -20,7 +20,6 @@ from kedro.extras.datasets.pandas import CSVDataSet
 from kedro.extras.datasets.pickle import PickleDataSet
 from kedro_tf_text.pipelines.preprocess.nodes import create_word2vec, gensim_to_keras_embedding
 
-from kedro_tf_text.pipelines.tabular.nodes import tabular_model
 
 
 @pytest.fixture
