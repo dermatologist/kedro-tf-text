@@ -1,6 +1,6 @@
 [project]
 name = "kedro_tf_text"
-version = "1.0.0"
+version = "1.0.1"
 
 [tool.kedro]
 package_name = "kedro_tf_text"

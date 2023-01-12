@@ -97,4 +97,4 @@ def process_csv_text(csv_data:pd.DataFrame, model, parameters: Dict):
     return_dict = {}
     for(id, doc) in zip(ids, encoded_docs):
         return_dict[id] = doc
-    return np.array(return_dict)
+    return return_dict
