@@ -88,9 +88,13 @@ def _process_csv_text(csv_data:pd.DataFrame, parameters: Dict):
 # * NODE
 def process_csv_text(csv_data:pd.DataFrame, model, parameters: Dict):
     sentences = _process_csv_text(csv_data, parameters)
+    ids = csv_data[parameters['ID_FIELD']].tolist()
     # Encode the documents using the new embedding
     vocab = model.wv.key_to_index
     logging.info(f"Vocab size: {len(vocab)}")
     # encoded_docs = [[model.wv[word] for word in sentence] for sentence in sentences]
     encoded_docs = [[vocab[word] for word in sentence] for sentence in sentences]
-    return np.array(encoded_docs)
+    return_dict = {}
+    for(id, doc) in zip(ids, encoded_docs):
+        return_dict[id] = doc
+    return np.array(return_dict)
