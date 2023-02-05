@@ -1,6 +1,6 @@
-# Kedro Tf Text
+# Kedro Tf Text :scroll:
 
-This package consists of [Kedro pipelines](https://kedro.readthedocs.io/en/stable/kedro.pipeline.html) for preprocessing text and tabular data for multi-modal ML in healthcare. This package builds Bert and CNN text models and [kedro-tf-image](https://github.com/dermatologist/kedro-tf-image) for image models. The [kedro-tf-utils](https://github.com/dermatologist/kedro-tf-utils) creates **fusion** models for **training**. 
+This package consists of [Kedro pipelines](https://kedro.readthedocs.io/en/stable/kedro.pipeline.html) for preprocessing text and tabular data for multimodal machine learning in healthcare. This package preprocesses BERT and CNN text models. Use [kedro-tf-image](https://github.com/dermatologist/kedro-tf-image) for preprocessing image models. The [kedro-tf-utils](https://github.com/dermatologist/kedro-tf-utils) creates **fusion** models for **training**. The [kedro-multimodal](https://github.com/dermatologist/kedro-multimodal) template uses these pipelines. **End users can just fork [kedro-multimodal](https://github.com/dermatologist/kedro-multimodal) template to build multimodal pipelines!**
 
 
 [![kedro-tf-text](https://github.com/dermatologist/kedro-tf-text/blob/develop/notes/text.drawio.svg)](https://github.com/dermatologist/kedro-tf-text/blob/develop/notes/text.drawio.svg)
